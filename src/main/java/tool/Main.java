@@ -6,5 +6,8 @@ public class Main {
         ComplexCSVGraph complexCSVGraph = new ComplexCSVGraph();
         complexCSVGraph.buildGraphFromCsvFile("D:\\LICENTA\\JBUGGER_outputs\\vehicule.jar_edges.csv");
         complexCSVGraph.visualizeGraph2();
+
+        complexCSVGraph.showAllVertices();
+        complexCSVGraph.MST_Prim("Boeing");
     }
 }

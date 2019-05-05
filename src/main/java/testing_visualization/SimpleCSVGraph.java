@@ -78,7 +78,7 @@ public class SimpleCSVGraph {
                 // and retrieving its value (an Integer)
 
                 System.out.println(cnt++ + ": " + source + " TO " + destination);
-                graph.addEdge(edge, source, destination, EdgeType.DIRECTED);
+                graph.addEdge(edge, source, destination, EdgeType.UNDIRECTED);
 
             }
         } catch (IOException e) {

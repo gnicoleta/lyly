@@ -28,7 +28,7 @@ public class ClusteringAlgorithm {
         Node source_node = new Node(source);
         Collection<Node> visited_nodes = new ArrayList<>();
 
-        Graph<Node, Edge> result = new UndirectedSparseMultigraph<Node, Edge>() {
+        Graph<Node, Edge> result = new DirectedSparseMultigraph<Node, Edge>() {
         };
 
         Collection<Edge> possible_edges_from_visited_nodes = new ArrayList<>();
@@ -53,7 +53,7 @@ public class ClusteringAlgorithm {
             ClusteringAlgorithm.addEdgesFromVisitedNodes(edges_of_node, possible_edges_from_visited_nodes);
 
             Node current_node_parent = new Node();
-            double MIN = Integer.MAX_VALUE;    //the minimum value will end up being stored in here
+            double MIN = 0;    //the minimum value will end up being stored in here
             for (Edge ii : possible_edges_from_visited_nodes) {
 
                 System.out.println("EDGE-ul" + ii);
@@ -61,7 +61,7 @@ public class ClusteringAlgorithm {
                 //from the array with all edges of all the visited nodes, the smallest edge will be chosen
                 System.out.println("MAMAMAMA" + visited_nodes.contains(ii.getEdgeSourceNode()) + " -- " + ii.getEdgeSourceNode()+ " -- " + ii.getEdgeDestiantionNode());
                 //le ia invers de la incident nodes, trebuie sa fii cu sursa (va fi aceeasi) si destiantia (diferita)
-                if (visited_nodes.contains(ii.getEdgeSourceNode()) && ii.getWeight() < MIN && !visited_nodes.contains(ii.getEdgeDestiantionNode())) {
+                if (visited_nodes.contains(ii.getEdgeSourceNode()) && ii.getWeight() > MIN && !visited_nodes.contains(ii.getEdgeDestiantionNode())) {
                     MIN = ii.getWeight();
                     current_node_parent = ii.getEdgeSourceNode();
                     current_node = ii.getEdgeDestiantionNode();
@@ -78,7 +78,7 @@ public class ClusteringAlgorithm {
             possible_edges_from_visited_nodes.remove(new Edge(current_node, current_node_parent, MIN));
         }
 
-        the_mst_edges.remove(the_mst_edges.size()-2);
+        //the_mst_edges.remove(the_mst_edges.size()-2);
 
         System.out.println(the_mst_edges.size());
 
@@ -99,7 +99,7 @@ public class ClusteringAlgorithm {
         }
 
         for (int i = 0; i < the_mst_edges.size()-1; i++) {
-            result.addEdge(((ArrayList<Edge>) the_mst_edges).get(i), ((ArrayList<Edge>) the_mst_edges).get(i).getEdgeSourceNode(), ((ArrayList<Edge>) the_mst_edges).get(i).getEdgeDestiantionNode(), EdgeType.UNDIRECTED);
+            result.addEdge(((ArrayList<Edge>) the_mst_edges).get(i), ((ArrayList<Edge>) the_mst_edges).get(i).getEdgeSourceNode(), ((ArrayList<Edge>) the_mst_edges).get(i).getEdgeDestiantionNode(), EdgeType.DIRECTED);
         }
         System.out.println(result.getVertices());
         System.out.println(result.getEdges());

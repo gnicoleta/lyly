@@ -17,8 +17,11 @@ public class Main {
         complexCSVGraph.showAllVertices();
         //complexCSVGraph.MST_Prim("Boeing");
 
-        Graph result = clusters.generateMST("Motor");
+        Graph result = clusters.generateMST("SUV");
         complexCSVGraph.visualizeGraph(result);
+
+        Graph result2 = clusters.generateMST("Masina");
+        complexCSVGraph.visualizeGraph(result2);
 
     }
 }

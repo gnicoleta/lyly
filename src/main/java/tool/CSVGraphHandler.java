@@ -52,7 +52,7 @@ public class CSVGraphHandler {
     public Graph buildGraphFromCsvFile(String csvFile) {
         /*Graph<Node, Edge> graph = new DirectedSparseMultigraph<Node, Edge>() {
         };*/
-        Graph<Node, Edge> graph = new UndirectedSparseMultigraph<Node, Edge>() {
+        Graph<Node, Edge> graph = new DirectedSparseMultigraph<Node, Edge>() {
         };
         String line = "";
         String cvsSplitBy = ",";
@@ -115,7 +115,7 @@ public class CSVGraphHandler {
 
                 //System.out.println(cnt++ + ": " + nodesMap.get(source).toString() + " TO " + nodesMap.get(destination).toString());
                 //graph.addEdge(new Edge(weight, edge), (Node) nodesMap.get(source), (Node) nodesMap.get(destination), EdgeType.DIRECTED);
-                graph.addEdge(new Edge((Node) nodesMap.get(source), (Node) nodesMap.get(destination), weight, edge), (Node) nodesMap.get(source), (Node) nodesMap.get(destination), EdgeType.UNDIRECTED);
+                graph.addEdge(new Edge((Node) nodesMap.get(source), (Node) nodesMap.get(destination), weight, edge), (Node) nodesMap.get(source), (Node) nodesMap.get(destination), EdgeType.DIRECTED);
 
             }
         } catch (IOException e) {

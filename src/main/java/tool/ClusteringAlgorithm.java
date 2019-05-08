@@ -21,6 +21,7 @@ public class ClusteringAlgorithm {
     }
 
 
+    //this is  a maximum spanning tree
     //public static void MST_Prim(Graph graph, Node source) {
     //public void generateMST(String source,double tresshold) {
     public Graph generateMST(String source) {
@@ -53,7 +54,7 @@ public class ClusteringAlgorithm {
             ClusteringAlgorithm.addEdgesFromVisitedNodes(edges_of_node, possible_edges_from_visited_nodes);
 
             Node current_node_parent = new Node();
-            double MIN = Integer.MAX_VALUE;    //the minimum value will end up being stored in here
+            double MAX = 0;    //the max value will end up being stored in here
             for (Edge ii : possible_edges_from_visited_nodes) {
 
                 System.out.println("EDGE-ul" + ii);
@@ -61,21 +62,22 @@ public class ClusteringAlgorithm {
                 //from the array with all edges of all the visited nodes, the smallest edge will be chosen
                 System.out.println("MAMAMAMA" + visited_nodes.contains(ii.getEdgeSourceNode()) + " -- " + ii.getEdgeSourceNode()+ " -- " + ii.getEdgeDestiantionNode());
                 //le ia invers de la incident nodes, trebuie sa fii cu sursa (va fi aceeasi) si destiantia (diferita)
-                if (visited_nodes.contains(ii.getEdgeSourceNode()) && ii.getWeight() < MIN && !visited_nodes.contains(ii.getEdgeDestiantionNode())) {
-                    MIN = ii.getWeight();
+                //nodurile trebuie sa fie parcurse in functie de ponderea cea mai mare de pe arce
+                if (visited_nodes.contains(ii.getEdgeSourceNode()) && ii.getWeight() > MAX && !visited_nodes.contains(ii.getEdgeDestiantionNode())) {
+                    MAX = ii.getWeight();
                     current_node_parent = ii.getEdgeSourceNode();
                     current_node = ii.getEdgeDestiantionNode();
                 }
             }
 
             //we add the the edges as they are parsed, in order to obtain the mst
-            the_mst_edges.add(new Edge(current_node_parent, current_node, MIN));
+            the_mst_edges.add(new Edge(current_node_parent, current_node, MAX));
             //System.out.println("FY" + ((ArrayList<Edge>) the_mst_edges).get(0));
 
             //to make sure we don't get on the same edge twice, we remove it from the array with all the edges of all visited nodes
             // the way I implemented a edge is ex: A - B, but also B - A (for undirected graphs)
-            possible_edges_from_visited_nodes.remove(new Edge(current_node_parent, current_node, MIN));
-            possible_edges_from_visited_nodes.remove(new Edge(current_node, current_node_parent, MIN));
+            possible_edges_from_visited_nodes.remove(new Edge(current_node_parent, current_node, MAX));
+            possible_edges_from_visited_nodes.remove(new Edge(current_node, current_node_parent, MAX));
         }
 
         the_mst_edges.remove(the_mst_edges.size()-2);

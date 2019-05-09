@@ -9,6 +9,8 @@ import edu.uci.ics.jung.graph.util.EdgeType;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+
 import com.google.common.collect.MoreCollectors;
 public class ClusteringAlgorithm {
 
@@ -103,6 +105,44 @@ public class ClusteringAlgorithm {
         return result;
 
     }
+
+    public  Graph generateClusters(Double tresshold) {
+        this.graph = graph;
+
+        Graph result = generateMST();
+
+        Collection <Edge> edges = new ArrayList<>();
+        edges = result.getEdges();
+
+        Collection<Edge> edges_to_remove = new ArrayList<>();
+
+        for(Edge e : edges) {
+            if(e.getWeight() > tresshold) {
+                edges_to_remove.add(e);
+                //result.removeEdge(e);
+                //System.out.printf("EDY: " + e);
+            }
+        }
+
+        //result.removeEdges()
+
+        for (Edge ed : edges_to_remove) {
+            result.removeEdge(ed);
+        }
+        return result;
+
+        //result.getEdges().stream().forEach(System.out::println);
+        //result.getEdges().stream().forEach( e-> cutTresshold((Edge)e, graph, tresshold));
+
+    }
+
+    private void cutTresshold(Edge e, Graph g, Double tresshold) {
+        if(e.getWeight() > tresshold ) {
+            g.getEdges().remove(e);
+        }
+    }
+
+
 
 
     public static void addEdgesFromVisitedNodes(Collection<Edge> source, Collection<Edge> destination) {

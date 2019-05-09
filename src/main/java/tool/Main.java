@@ -11,15 +11,18 @@ public class Main {
         //D:\LICENTA\lyly\src\main\resources\csv_files
         //Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\bank.jar_edges.csv");
         Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\vehicule.jar_edges.csv");
-        ClusteringAlgorithm clusters = new ClusteringAlgorithm(graph);
+        ClusteringAlgorithm clusteringAlgorithm = new ClusteringAlgorithm(graph);
         complexCSVGraph.visualizeGraph(graph);
 
         complexCSVGraph.showAllVertices();
         //complexCSVGraph.MST_Prim("Boeing");
 
         //Graph result = clusters.generateMST("Turisme");
-        Graph result = clusters.generateMST();
+        Graph result = clusteringAlgorithm.generateMST();
         complexCSVGraph.visualizeGraph(result);
+
+        Graph clusters = clusteringAlgorithm.generateClusters(29.0);
+        complexCSVGraph.visualizeGraph(clusters);
 
     }
 }

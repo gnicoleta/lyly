@@ -10,7 +10,7 @@ public class Main {
         //Graph graph = complexCSVGraph.buildGraphFromCsvFile("D:\\LICENTA\\JBUGGER_outputs\\vehicule.jar_edges.csv");
         //D:\LICENTA\lyly\src\main\resources\csv_files
         //Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\bank.jar_edges.csv");
-        Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\vehicule.jar_edges.csv");
+        Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\bank.jar_edges.csv");
         ClusteringAlgorithm clusteringAlgorithm = new ClusteringAlgorithm(graph);
         complexCSVGraph.visualizeGraph(graph);
 

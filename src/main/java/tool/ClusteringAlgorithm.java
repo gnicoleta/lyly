@@ -116,24 +116,53 @@ public class ClusteringAlgorithm {
 
         Collection<Edge> edges_to_remove = new ArrayList<>();
 
+        String cluster_color = "green";
+        //int contor = 0;
         for(Edge e : edges) {
+//            e.getEdgeSourceNode().setCluster_id(cluster_color);
+//            e.getEdgeDestiantionNode().setCluster_id(cluster_color);
+//            e.getEdgeSourceNode().setCluster_id(cluster_color);
+
             if(e.getWeight() > tresshold) {
                 edges_to_remove.add(e);
                 //result.removeEdge(e);
                 //System.out.printf("EDY: " + e);
+                cluster_color = "red";
+                //contor += 1 ;
+               // System.out.printf("PPP: " + contor);
+                System.out.printf("EEE: " + e);
             }
+
+//            System.out.println("LOLO: " + contor);
+//            e.getEdgeSourceNode().setCluster_id("" + contor);
+//            e.getEdgeDestiantionNode().setCluster_id("" + contor);
+
+            e.getEdgeSourceNode().setCluster_id(cluster_color);
+            e.getEdgeDestiantionNode().setCluster_id(cluster_color);
+            e.getEdgeSourceNode().setCluster_id(cluster_color);
+            cluster_color = "green";
         }
 
         //result.removeEdges()
 
         for (Edge ed : edges_to_remove) {
             result.removeEdge(ed);
+            result.getIncidentVertices(ed.getEdgeSourceNode());
         }
+
+        result.getVertices().stream().forEach(System.out::println);
+
+
         return result;
 
         //result.getEdges().stream().forEach(System.out::println);
         //result.getEdges().stream().forEach( e-> cutTresshold((Edge)e, graph, tresshold));
 
+    }
+
+
+    public void colorNode(String color, Node n) {
+        n.setCluster_id(color);
     }
 
     private void cutTresshold(Edge e, Graph g, Double tresshold) {

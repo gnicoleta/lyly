@@ -2,6 +2,7 @@ package tool;
 
 public class Node {
     String id;
+    String cluster_id;
 
     public Node() {
     }
@@ -12,12 +13,20 @@ public class Node {
 
 
     public String toString() {
-        return "V: " + id;
+        return "V: " + id + " CLUSTER: " + cluster_id;
     }
 
     public String Node_Property() {
         String node_prop = id;
         return (node_prop);
+    }
+
+    public void setCluster_id(String color) {
+        this.cluster_id = color;
+    }
+
+    public String getCluster_id() {
+        return cluster_id;
     }
 
     @Override

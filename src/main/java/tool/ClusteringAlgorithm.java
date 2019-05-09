@@ -25,6 +25,8 @@ public class ClusteringAlgorithm {
     //public static void MST_Prim(Graph graph, Node source) {
     //public void generateMST(String source,double tresshold) {
     public Graph generateMST(String source) {
+
+        System.out.println("GRAPH NODES TOTAL: " + this.graph.getVertices().size());
         //System.out.println("Edges of the graph" + graph.getEdges());
         Node source_node = new Node(source);
         Collection<Node> visited_nodes = new ArrayList<>();
@@ -48,7 +50,13 @@ public class ClusteringAlgorithm {
         //while (current_node != destination) {
         while (!visited_nodes.contains(current_node)) {
             visited_nodes.add(current_node);
+            edges_of_node = this.graph.getIncidentEdges(current_node);
             System.out.println(" CCCCCCCCCC     " + current_node.Node_Property());
+
+
+            System.out.println("WWWW");
+            possible_edges_from_visited_nodes.forEach(System.out::println);
+            System.out.println("WWWW");
 
             //we add all the edges of the current_nod into the array with all the edges of ALL the visited nodes
             ClusteringAlgorithm.addEdgesFromVisitedNodes(edges_of_node, possible_edges_from_visited_nodes);
@@ -57,10 +65,10 @@ public class ClusteringAlgorithm {
             double MAX = 0;    //the max value will end up being stored in here
             for (Edge ii : possible_edges_from_visited_nodes) {
 
-                System.out.println("EDGE-ul" + ii);
+                //System.out.println("EDGE-ul" + ii);
                 //the edge is from a visited node to an unvisited one
                 //from the array with all edges of all the visited nodes, the smallest edge will be chosen
-                System.out.println("MAMAMAMA" + visited_nodes.contains(ii.getEdgeSourceNode()) + " -- " + ii.getEdgeSourceNode()+ " -- " + ii.getEdgeDestiantionNode());
+                //System.out.println("MAMAMAMA" + visited_nodes.contains(ii.getEdgeSourceNode()) + " -- " + ii.getEdgeSourceNode()+ " -- " + ii.getEdgeDestiantionNode());
                 //le ia invers de la incident nodes, trebuie sa fii cu sursa (va fi aceeasi) si destiantia (diferita)
                 //nodurile trebuie sa fie parcurse in functie de ponderea cea mai mare de pe arce
                 if (visited_nodes.contains(ii.getEdgeSourceNode()) && ii.getWeight() > MAX && !visited_nodes.contains(ii.getEdgeDestiantionNode())) {
@@ -113,7 +121,7 @@ public class ClusteringAlgorithm {
 
     public static void addEdgesFromVisitedNodes(Collection<Edge> source, Collection<Edge> destination) {
         for (Edge t : source) {
-            //destination.add(new Edge(t.getEdgeDestiantionNode(), t.getEdgeSourceNode(), t.getWeight()));
+            destination.add(new Edge(t.getEdgeDestiantionNode(), t.getEdgeSourceNode(), t.getWeight()));
             destination.add(t);
         }
     }

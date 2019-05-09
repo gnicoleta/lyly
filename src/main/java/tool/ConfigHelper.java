@@ -11,6 +11,14 @@ public class ConfigHelper {
     InputStream inputStream;
 
     public static ArrayList<Integer> getPropertiesValues() {
+        ArrayList<Integer> arr = new ArrayList<>();
+        arr.add(1);
+        arr.add(2);
+        arr.add(3);
+        return arr;
+    }
+/*
+    public static ArrayList<Integer> getPropertiesValues() {
         FileInputStream inputStream;
 
         ArrayList<Object> properties_arr;
@@ -37,7 +45,7 @@ public class ConfigHelper {
             System.out.println("Exception: " + e);
         }
         return prop_values_arr;
-    }
+    }*/
 
     public void readCSV() {
         String line = "";

@@ -17,7 +17,8 @@ public class Main {
         complexCSVGraph.showAllVertices();
         //complexCSVGraph.MST_Prim("Boeing");
 
-        Graph result = clusters.generateMST("Turisme");
+        //Graph result = clusters.generateMST("Turisme");
+        Graph result = clusters.generateMST();
         complexCSVGraph.visualizeGraph(result);
 
     }

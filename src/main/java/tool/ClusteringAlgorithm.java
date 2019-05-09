@@ -1,5 +1,6 @@
 package tool;
 
+import com.google.common.collect.Streams;
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
@@ -8,7 +9,7 @@ import edu.uci.ics.jung.graph.util.EdgeType;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
+import com.google.common.collect.MoreCollectors;
 public class ClusteringAlgorithm {
 
     Graph graph;
@@ -16,6 +17,9 @@ public class ClusteringAlgorithm {
 
     Graph result;
 
+    public ClusteringAlgorithm() {
+
+    }
     public ClusteringAlgorithm(Graph graph) {
         this.graph = graph;
     }
@@ -24,11 +28,12 @@ public class ClusteringAlgorithm {
     //this is  a maximum spanning tree
     //public static void MST_Prim(Graph graph, Node source) {
     //public void generateMST(String source,double tresshold) {
-    public Graph generateMST(String source) {
+    //public Graph generateMST(String source) {
+    public Graph generateMST() {
 
         System.out.println("GRAPH NODES TOTAL: " + this.graph.getVertices().size());
         //System.out.println("Edges of the graph" + graph.getEdges());
-        Node source_node = new Node(source);
+        //Node source_node = new Node(source);
         Collection<Node> visited_nodes = new ArrayList<>();
 
         Graph<Node, Edge> result = new UndirectedSparseMultigraph<Node, Edge>() {
@@ -38,14 +43,10 @@ public class ClusteringAlgorithm {
         Collection<Edge> the_mst_edges = new ArrayList<>();
 
         Collection<Node> all_nodes = this.graph.getVertices();
-        Node current_node = ClusteringAlgorithm.getNode(this.graph, source_node);
-        System.out.println("AAA " + current_node);
-        System.out.println("BBB " + source_node);
+        //Node current_node = ClusteringAlgorithm.getNode(this.graph, source_node);
+        Node current_node = (Node)Streams.findLast(this.graph.getVertices().stream()).get();
 
-        Collection<Edge> edges_of_node = this.graph.getIncidentEdges(current_node);
-        System.out.println("TTTT");
-        edges_of_node.forEach(System.out::println);
-        System.out.println("TTTT");
+        Collection<Edge> edges_of_node;
 
         //while (current_node != destination) {
         while (!visited_nodes.contains(current_node)) {
@@ -68,9 +69,6 @@ public class ClusteringAlgorithm {
                 //System.out.println("EDGE-ul" + ii);
                 //the edge is from a visited node to an unvisited one
                 //from the array with all edges of all the visited nodes, the smallest edge will be chosen
-                //System.out.println("MAMAMAMA" + visited_nodes.contains(ii.getEdgeSourceNode()) + " -- " + ii.getEdgeSourceNode()+ " -- " + ii.getEdgeDestiantionNode());
-                //le ia invers de la incident nodes, trebuie sa fii cu sursa (va fi aceeasi) si destiantia (diferita)
-                //nodurile trebuie sa fie parcurse in functie de ponderea cea mai mare de pe arce
                 if (visited_nodes.contains(ii.getEdgeSourceNode()) && ii.getWeight() > MAX && !visited_nodes.contains(ii.getEdgeDestiantionNode())) {
                     MAX = ii.getWeight();
                     current_node_parent = ii.getEdgeSourceNode();
@@ -80,7 +78,6 @@ public class ClusteringAlgorithm {
 
             //we add the the edges as they are parsed, in order to obtain the mst
             the_mst_edges.add(new Edge(current_node_parent, current_node, MAX));
-            //System.out.println("FY" + ((ArrayList<Edge>) the_mst_edges).get(0));
 
             //to make sure we don't get on the same edge twice, we remove it from the array with all the edges of all visited nodes
             // the way I implemented a edge is ex: A - B, but also B - A (for undirected graphs)
@@ -89,21 +86,10 @@ public class ClusteringAlgorithm {
         }
 
         the_mst_edges.remove(the_mst_edges.size()-2);
-
-        System.out.println(the_mst_edges.size());
-
-
-        /*Graph<Node, Edge> result = new DirectedSparseMultigraph<Node, Edge>() {
-        };*/
-
-        System.out.println("DE CE MA");
-        System.out.println(the_mst_edges.size());
         for (Edge tt : the_mst_edges) {
 
             System.out.println(the_mst_edges.size());
             System.out.println(" -- " + tt.getEdgeSourceNode() + " - " + tt.getEdgeDestiantionNode() + ": " + tt.getWeight());
-            System.out.println("DE CE");
-            System.out.println("CEeeeeeeee" + tt);
             //result.addEdge(tt, tt.getEdgeSourceNode(), tt.getEdgeDestiantionNode(), EdgeType.UNDIRECTED);
             //System.out.println(result.getVertices());
         }

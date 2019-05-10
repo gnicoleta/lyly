@@ -32,7 +32,7 @@ public class ClusteringAlgorithm {
     //public static void MST_Prim(Graph graph, Node source) {
     //public void generateMST(String source,double tresshold) {
     //public Graph generateMST(String source) {
-    public Graph generateMST() {
+   /* public Graph generateMST() {
 
         System.out.println("GRAPH NODES TOTAL: " + this.graph.getVertices().size());
         //System.out.println("Edges of the graph" + graph.getEdges());
@@ -105,9 +105,37 @@ public class ClusteringAlgorithm {
 
         return result;
 
-    }
+    }*/
 
-    public Graph generateMST(Graph graph, Node n) {
+    public Graph generateMST(Object ... args) {
+        Graph graph = null;
+        Node current_node = null;
+        System.out.println("CEAU" + args.length);
+
+        if(args.length == 0) {
+            graph = this.graph;
+            current_node = (Node) Streams.findLast(this.graph.getVertices().stream()).get();
+        } else {
+            for (int o = 0; o < args.length; o++) {
+
+                System.out.println("CEAU" + args[0]);
+                if (args[0] instanceof Graph) {
+
+                    graph = (Graph) args[0];
+                } else {
+
+                    System.out.println("CEAU3" + args[0]);
+                    graph = this.graph;
+                }
+
+                if (args[1] instanceof Node) {
+                    current_node = getNode(graph, (Node) args[1]);
+                } else {
+                    current_node = (Node) Streams.findLast(this.graph.getVertices().stream()).get();
+                }
+            }
+        }
+
 
         //System.out.println("Edges of the graph" + graph.getEdges());
         //Node source_node = new Node(source);
@@ -120,7 +148,7 @@ public class ClusteringAlgorithm {
         Collection<Edge> the_mst_edges = new ArrayList<>();
 
         Collection<Node> all_nodes = graph.getVertices();
-        Node current_node = getNode(graph, n);
+        //Node current_node = getNode(graph, n);
 
         Collection<Edge> edges_of_node;
 
@@ -192,56 +220,18 @@ public class ClusteringAlgorithm {
 
         String cluster_color = "green";
 
-        //List<List<Edge>> cluster_edges = new ArrayList<>();
-
-        ArrayList<ArrayArray<Edge>> clusters = new ArrayList<>();
-
-        ArrayList<Edge> c_edges = new ArrayList<>();
-
-       // ArrayArray<Edge> cc = new ArrayArray<>();
-
         Graph test = new UndirectedSparseMultigraph<>();
 
 
 
         //int contor = 0;
         for(Edge e : edges) {
-//            e.getEdgeSourceNode().setCluster_id(cluster_color);
-//            e.getEdgeDestiantionNode().setCluster_id(cluster_color);
-//            e.getEdgeSourceNode().setCluster_id(cluster_color);
-
-            c_edges.add(e);
-
-            Collection<Node> a = new ArrayList();
-
 
 
             if(e.getWeight() > tresshold) {
-                ArrayArray<Edge> cc = new ArrayArray<>();
                 edges_to_remove.add(e);
-                //result.removeEdge(e);
-                //System.out.printf("EDY: " + e);
                 cluster_color = "red";
-                //contor += 1 ;
-               // System.out.printf("PPP: " + contor);
-                /*System.out.printf("EEE: " + e);
-                cc.setArray(c_edges);
-                clusters.add(cc);
-                Collection<Node> nn = new ArrayList<>();
-                nn = this.graph.getVertices();
-                Node n = new Node();
-                this.graph.degree(n);*/
-
-
-
             }
-
-
-            c_edges.clear();
-
-//            System.out.println("LOLO: " + contor);
-//            e.getEdgeSourceNode().setCluster_id("" + contor);
-//            e.getEdgeDestiantionNode().setCluster_id("" + contor);
 
             e.getEdgeSourceNode().setCluster_id(cluster_color);
             e.getEdgeDestiantionNode().setCluster_id(cluster_color);
@@ -249,34 +239,17 @@ public class ClusteringAlgorithm {
             cluster_color = "green";
         }
 
-        //result.removeEdges()
-
         for (Edge ed : edges_to_remove) {
             result.removeEdge(ed);
-           // result.getIncidentVertices(ed.getEdgeSourceNode());
             System.out.println("WTF: " + ed.getEdgeSourceNode());
-
             test = generateMST(result, ed.getEdgeSourceNode());
         }
         System.out.println("TEEEEEEEEEEEST:  " + test.getVertices().size());
+        System.out.println("TEEEEEEEEEEEST:  " + test.getVertices());
 
         result.getVertices().stream().forEach(System.out::println);
 
-        for(ArrayArray<Edge> a : clusters) {
-
-            System.out.println("----CCC");
-            for(Edge e : a.getArray()) {
-                System.out.println(e);
-            }
-
-        }
-
-
         return result;
-
-        //result.getEdges().stream().forEach(System.out::println);
-        //result.getEdges().stream().forEach( e-> cutTresshold((Edge)e, graph, tresshold));
-
     }
 
 

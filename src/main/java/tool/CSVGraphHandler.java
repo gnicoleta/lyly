@@ -141,11 +141,11 @@ public class CSVGraphHandler {
 
         Transformer<Node, Paint> vertexColor = new Transformer<Node, Paint>() {
             public Paint transform(Node i) {
-                //return Color.GREEN;}
-                if(i.getCluster_id().equals("green")) {
+                return Color.GREEN;}
+                /*if(i.getCluster_id().equals("green")) {
                     return Color.GREEN;
                 } else return Color.RED;
-            }
+            }*/
         };
 
         Transformer<Node, String> vertexLabelTransformer = new Transformer<Node, String>() {

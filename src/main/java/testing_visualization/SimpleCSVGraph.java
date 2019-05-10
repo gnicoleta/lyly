@@ -1,6 +1,8 @@
 package testing_visualization;
 
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
+import edu.uci.ics.jung.algorithms.layout.FRLayout;
+import edu.uci.ics.jung.algorithms.layout.KKLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.Graph;
@@ -92,7 +94,7 @@ public class SimpleCSVGraph {
     //public void visualizeGraph(Graph graph) {
     public void visualizeGraph() {
         // The Layout<V, E> is parameterized by the vertex and edge types
-        Layout<Integer, String> layout = new CircleLayout(this.graph);
+        Layout<Integer, String> layout = new KKLayout(this.graph);
         layout.setSize(new Dimension(1000, 1000)); // sets the initial size of the space
         // The BasicVisualizationServer<V,E> is parameterized by the edge types
         BasicVisualizationServer<Integer, String> vv =
@@ -115,10 +117,9 @@ class SimpleCSVGraphMain {
 
         System.out.println("\n\n\n");
         SimpleCSVGraph simpleCSVGraph = new SimpleCSVGraph();
-        simpleCSVGraph.buildGraphFromCsvFile("D:\\LICENTA\\RawDataDump2\\outputs\\ByteCommunicationFinal.jar_edges.csv");
         simpleCSVGraph.visualizeGraph();
 
-        System.out.println(simpleCSVGraph.getGraph().getVertexCount());
-        System.out.println(simpleCSVGraph.getGraph().getEdges().size());
+        //System.out.println(simpleCSVGraph.getGraph().getVertexCount());
+        //System.out.println(simpleCSVGraph.getGraph().getEdges().size());
     }
 }

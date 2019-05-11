@@ -11,14 +11,6 @@ public class ConfigHelper {
     InputStream inputStream;
 
     public static ArrayList<Integer> getPropertiesValues() {
-        ArrayList<Integer> arr = new ArrayList<>();
-        arr.add(1);
-        arr.add(2);
-        arr.add(3);
-        return arr;
-    }
-/*
-    public static ArrayList<Integer> getPropertiesValues() {
         FileInputStream inputStream;
 
         ArrayList<Object> properties_arr;
@@ -26,7 +18,8 @@ public class ConfigHelper {
 
         try {
             Properties prop = new Properties();
-            String propFileName = "D:\\LICENTA\\LicentaPrjPractice\\src\\main\\resources\\config.properties";
+            File file = new File("src\\main\\resources\\config.properties");
+            String propFileName = file.getAbsolutePath();
 
             inputStream = new FileInputStream(propFileName);
 
@@ -45,7 +38,7 @@ public class ConfigHelper {
             System.out.println("Exception: " + e);
         }
         return prop_values_arr;
-    }*/
+    }
 
     public void readCSV() {
         String line = "";
@@ -78,7 +71,7 @@ public class ConfigHelper {
                 int o = 0;
                 while (ind != 13) {
                     wgt += weight.get(o) * Integer.parseInt(edges[ind]);
-                    ind = ind+1;
+                    ind = ind + 1;
                 }
 
             }

@@ -13,7 +13,8 @@ public class Node {
 
 
     public String toString() {
-        return "V: " + id + " CLUSTER: " + cluster_id;
+        //return "V: " + id + " CLUSTER: " + cluster_id;
+        return "V: " + id;
     }
 
     public String Node_Property() {

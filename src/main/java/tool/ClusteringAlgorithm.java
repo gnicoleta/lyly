@@ -1,6 +1,9 @@
 package tool;
 
 import com.google.common.collect.Streams;
+import edu.uci.ics.jung.algorithms.cluster.BicomponentClusterer;
+import edu.uci.ics.jung.algorithms.cluster.EdgeBetweennessClusterer;
+import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
@@ -13,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.collect.MoreCollectors;
+
 public class ClusteringAlgorithm {
 
     Graph graph;
@@ -23,6 +27,7 @@ public class ClusteringAlgorithm {
     public ClusteringAlgorithm() {
 
     }
+
     public ClusteringAlgorithm(Graph graph) {
         this.graph = graph;
     }
@@ -107,57 +112,52 @@ public class ClusteringAlgorithm {
 
     }*/
 
-    public Graph generateMST(Object ... args) {
+    public Graph generateMST(Object... args) {
         Graph graph = null;
         Node current_node = null;
-        System.out.println("CEAU" + args.length);
 
-        if(args.length == 0) {
+        int conto = 0;
+        if (args.length == 0) {
             graph = this.graph;
             current_node = (Node) Streams.findLast(this.graph.getVertices().stream()).get();
         } else {
-            for (int o = 0; o < args.length; o++) {
-
-                System.out.println("CEAU" + args[0]);
-                if (args[0] instanceof Graph) {
-
-                    graph = (Graph) args[0];
-                } else {
-
-                    System.out.println("CEAU3" + args[0]);
-                    graph = this.graph;
-                }
-
+            System.out.println("CEAU" + args[0]);
+            if (args[0] instanceof Graph) {
+                graph = (Graph) args[0];
+            } else {
+                System.out.println("CEAU3" + args[0]);
+                graph = this.graph;
+            }
                 if (args[1] instanceof Node) {
                     current_node = getNode(graph, (Node) args[1]);
                 } else {
                     current_node = (Node) Streams.findLast(this.graph.getVertices().stream()).get();
                 }
+
             }
+
+        try {
+            if (args[2] != null) {
+                System.out.println(" AMU " + args[2]);
+            }
+        } catch (Exception e) {
+
         }
-
-
-        //System.out.println("Edges of the graph" + graph.getEdges());
-        //Node source_node = new Node(source);
         Collection<Node> visited_nodes = new ArrayList<>();
-
         Graph<Node, Edge> result = new UndirectedSparseMultigraph<Node, Edge>() {
         };
 
         Collection<Edge> possible_edges_from_visited_nodes = new ArrayList<>();
         Collection<Edge> the_mst_edges = new ArrayList<>();
-
-        Collection<Node> all_nodes = graph.getVertices();
-        //Node current_node = getNode(graph, n);
-
         Collection<Edge> edges_of_node;
 
-        //while (current_node != destination) {
         while (!visited_nodes.contains(current_node)) {
+            conto++;
+            System.out.println("CURENT" + conto + " -- " + current_node);
             visited_nodes.add(current_node);
             edges_of_node = graph.getIncidentEdges(current_node);
+            System.out.println("EDE" + edges_of_node);
             System.out.println(" CCCCCCCCCC     " + current_node.Node_Property());
-
 
             System.out.println("WWWW");
             possible_edges_from_visited_nodes.forEach(System.out::println);
@@ -188,67 +188,105 @@ public class ClusteringAlgorithm {
             possible_edges_from_visited_nodes.remove(new Edge(current_node_parent, current_node, MAX));
             possible_edges_from_visited_nodes.remove(new Edge(current_node, current_node_parent, MAX));
         }
-
-        the_mst_edges.remove(the_mst_edges.size()-2);
+        the_mst_edges.remove(the_mst_edges.size() - 2);
         for (Edge tt : the_mst_edges) {
-
             System.out.println(the_mst_edges.size());
             System.out.println(" -- " + tt.getEdgeSourceNode() + " - " + tt.getEdgeDestiantionNode() + ": " + tt.getWeight());
             //result.addEdge(tt, tt.getEdgeSourceNode(), tt.getEdgeDestiantionNode(), EdgeType.UNDIRECTED);
             //System.out.println(result.getVertices());
         }
-
-        for (int i = 0; i < the_mst_edges.size()-1; i++) {
+        for (int i = 0; i < the_mst_edges.size() - 1; i++) {
             result.addEdge(((ArrayList<Edge>) the_mst_edges).get(i), ((ArrayList<Edge>) the_mst_edges).get(i).getEdgeSourceNode(), ((ArrayList<Edge>) the_mst_edges).get(i).getEdgeDestiantionNode(), EdgeType.UNDIRECTED);
         }
         System.out.println(result.getVertices());
         System.out.println(result.getEdges());
-
         return result;
-
     }
 
-    public  Graph generateClusters(Double tresshold) {
+    public Graph generateClusters(Double tresshold) {
         this.graph = graph;
-
         Graph result = generateMST();
+        Collection<Edge> edges = result.getEdges();
+        //edges = result.getEdges();
 
-        Collection <Edge> edges = new ArrayList<>();
-        edges = result.getEdges();
+        ArrayList<Node> edges_to_remove_nodesDest = new ArrayList<>();
+
+        EdgeBetweennessClusterer bc = new EdgeBetweennessClusterer(1);
+
+        System.out.println("AAAAAAAAAAAAAAAA");
+        bc.transform((UndirectedGraph) result).stream().forEach(System.out::println);
+        System.out.println("AAAAAAAAAAAAAAAA");
 
         Collection<Edge> edges_to_remove = new ArrayList<>();
-
         String cluster_color = "green";
-
         Graph test = new UndirectedSparseMultigraph<>();
-
-
+        ArrayList<Graph> clusters = new ArrayList<>();
 
         //int contor = 0;
-        for(Edge e : edges) {
-
-
-            if(e.getWeight() > tresshold) {
+        for (Edge e : edges) {
+            System.out.println("--------------" + e);
+            ((UndirectedSparseMultigraph) test).addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode(), EdgeType.UNDIRECTED);
+            if (e.getWeight() > tresshold) {
+                System.out.println("~~~~~~~~~~ taiat " + e);
+                edges_to_remove_nodesDest.add(e.getEdgeDestiantionNode());
+               // clusters.add(test);
+                test = new UndirectedSparseMultigraph<>();
+                //test = (Graph)new Object();
                 edges_to_remove.add(e);
                 cluster_color = "red";
             }
-
             e.getEdgeSourceNode().setCluster_id(cluster_color);
             e.getEdgeDestiantionNode().setCluster_id(cluster_color);
             e.getEdgeSourceNode().setCluster_id(cluster_color);
             cluster_color = "green";
         }
 
+
+        System.out.println("AaaaaaaaAAA " + result.getVertices().size() + " --- " + result.getEdges().size());
+        System.out.println("TOATE CLUSTERELE\n" + clusters.size());
         for (Edge ed : edges_to_remove) {
+
+            //System.out.println("BBBBB" + edges_to_remove.size() + " --- " + ed);
             result.removeEdge(ed);
-            System.out.println("WTF: " + ed.getEdgeSourceNode());
-            test = generateMST(result, ed.getEdgeSourceNode());
+            //System.out.println("BBBBB"+result.getVertices().size());
+            //System.out.println("WTF REMOVE: " + ed);
+            //System.out.println("WTF REMOVE: " + ed.getEdgeDestiantionNode());
+
+
+            //test = generateMST(result, ed.getEdgeDestiantionNode());
+            //clusters.add(test);
         }
-        System.out.println("TEEEEEEEEEEEST:  " + test.getVertices().size());
-        System.out.println("TEEEEEEEEEEEST:  " + test.getVertices());
+        //System.out.println("TEEEEEEEEEEEST:  " + test.getVertices().size());
+       // System.out.println("TEEEEEEEEEEEST:  " + test.getVertices());
 
-        result.getVertices().stream().forEach(System.out::println);
+        //result.getVertices().stream().forEach(System.out::println);
 
+
+        /*for (Graph g : clusters) {
+            System.out.println(g);
+            System.out.println(g.getVertices().size());
+        }*/
+
+        for(Node n : edges_to_remove_nodesDest) {
+            System.out.println("CARE E NODUL: " + n);
+            clusters.add(generateMST(result, getNode(result, n)));
+        }
+
+        System.out.println(" OOOOOOO " + generateMST(result, getNode(result, new Node("SUV"))));
+        //System.out.println(" OOOOOOO " + generateMST(result, getNode(result, new Node("Avion"))));
+
+        System.out.println("AaaaaaaaAAA " +  " !!!!!!!!" + clusters.size());
+        for(Graph ge : clusters) {
+            System.out.println(" *****  " + ge.getVertices());
+        }
+        System.out.println("CE PLM " + result.getIncidentEdges(getNode(result, new Node("SUV"))));
+        System.out.println("CE PLM " + generateMST(result, getNode(result, new Node("SUV")), " MACAROANE"));
+        /*System.out.println("AaaaaaaaAAA " +  " !!!!!!!!" + clusters.size() + result.getVertices().size() + " --- " + result.getEdges().size());
+        //System.out.println("CCCCCC" + generateMST(result, getNode(result, new Node("SUV"))));
+        System.out.println("CE PLM " + result.getIncidentEdges(getNode(result, new Node("SUV"))));
+*/
+        //DijkstraShortestPath dj = new DijkstraShortestPath(result);
+        //System.out.println("BLB" + dj.getPath(getNode(result, new Node("Avion")), getNode(result,new Node("SUV"))));
         return result;
     }
 
@@ -258,12 +296,10 @@ public class ClusteringAlgorithm {
     }
 
     private void cutTresshold(Edge e, Graph g, Double tresshold) {
-        if(e.getWeight() > tresshold ) {
+        if (e.getWeight() > tresshold) {
             g.getEdges().remove(e);
         }
     }
-
-
 
 
     public static void addEdgesFromVisitedNodes(Collection<Edge> source, Collection<Edge> destination) {
@@ -277,10 +313,10 @@ public class ClusteringAlgorithm {
     public static Node getNode(Graph g, Node source) {
         Collection<Node> all_nodes = g.getVertices();
 
-        for(Node i : all_nodes) {
+        for (Node i : all_nodes) {
             System.out.println(i.Node_Property() + " - " + source.Node_Property());
             System.out.println(i.Node_Property().equals(source.Node_Property()));
-            if(i.Node_Property().equals(source.Node_Property())) {
+            if (i.Node_Property().equals(source.Node_Property())) {
                 return i;
             }
         }

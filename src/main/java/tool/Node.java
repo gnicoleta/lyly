@@ -2,7 +2,8 @@ package tool;
 
 public class Node {
     String id;
-    String cluster_id;
+    //String cluster_id;
+    Integer cluster_id = 0;
 
     public Node() {
     }
@@ -22,11 +23,16 @@ public class Node {
         return (node_prop);
     }
 
-    public void setCluster_id(String color) {
+//    public void setCluster_id(String color) {
+//        this.cluster_id = color;
+//    }
+//    public String getCluster_id() {
+//        return cluster_id;
+//    }
+    public void setCluster_id(Integer color) {
         this.cluster_id = color;
     }
-
-    public String getCluster_id() {
+    public Integer getCluster_id() {
         return cluster_id;
     }
 

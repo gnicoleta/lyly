@@ -130,8 +130,6 @@ public class ClusteringAlgorithm {
         Collection<Edge> edges = result.getEdges();
         Set<Node> edges_to_remove_nodesDest = new HashSet<>();
         Collection<Edge> edges_to_remove = new ArrayList<>();
-        String cluster_color = "green";
-        Graph test = new UndirectedSparseMultigraph<>();
         ArrayList<Graph> clusters = new ArrayList<>();
 
         ArrayList<Edge> edges_to_remake = new ArrayList<>();
@@ -139,21 +137,12 @@ public class ClusteringAlgorithm {
         //int contor = 0;
         for (Edge e : edges) {
             System.out.println("--------------" + e);
-            ((UndirectedSparseMultigraph) test).addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode(), EdgeType.UNDIRECTED);
             if (e.getWeight() > tresshold) {
                 System.out.println("~~~~~~~~~~ taiat " + e);
                 edges_to_remove_nodesDest.add(e.getEdgeDestiantionNode());
                 edges_to_remove_nodesDest.add(e.getEdgeSourceNode());
-               // clusters.add(test);
-                test = new UndirectedSparseMultigraph<>();
-                //test = (Graph)new Object();
                 edges_to_remove.add(e);
-                cluster_color = "red";
             }
-            e.getEdgeSourceNode().setCluster_id(cluster_color);
-            e.getEdgeDestiantionNode().setCluster_id(cluster_color);
-            e.getEdgeSourceNode().setCluster_id(cluster_color);
-            cluster_color = "green";
         }
 
         for (Edge ed : edges_to_remove) {
@@ -178,8 +167,6 @@ public class ClusteringAlgorithm {
                Node destination = null;
                try {
                    destination = (Node) vertices.toArray()[1];
-                   System.out.println("KAKA " + destination);
-
                }catch (ArrayIndexOutOfBoundsException e) {
 
                }
@@ -219,8 +206,13 @@ public class ClusteringAlgorithm {
         }
 
         System.out.println("CLUSTERS SIZE" + clusters.size());
+        Integer contor = 1;
         for(Graph ge : clusters) {
             System.out.println(" $$$$$$  " + ge.getVertices());
+
+            for(Object n : ge.getVertices()) {
+                ((Node)n).cluster_id = contor;
+            }
         }
 
         return result;
@@ -228,7 +220,7 @@ public class ClusteringAlgorithm {
 
 
     public void colorNode(String color, Node n) {
-        n.setCluster_id(color);
+        //n.setCluster_id(color);
     }
 
     private void cutTresshold(Edge e, Graph g, Double tresshold) {

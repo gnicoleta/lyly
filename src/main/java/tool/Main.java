@@ -21,7 +21,7 @@ public class Main {
         Graph result = clusteringAlgorithm.generateMST();
         complexCSVGraph.visualizeGraph(result);
 
-        Graph clusters = clusteringAlgorithm.generateClusters(29.0);
+        Graph clusters = clusteringAlgorithm.generateClusters(11.0);
         complexCSVGraph.visualizeGraph(clusters);
 
         System.out.println(clusters);

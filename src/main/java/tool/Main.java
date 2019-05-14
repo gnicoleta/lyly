@@ -10,19 +10,19 @@ public class Main {
         //Graph graph = complexCSVGraph.buildGraphFromCsvFile("D:\\LICENTA\\JBUGGER_outputs\\vehicule.jar_edges.csv");
         //D:\LICENTA\lyly\src\main\resources\csv_files
         //Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\bank.jar_edges.csv");
-        Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\vehicule.jar_edges.csv");
+        Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\bank.jar_edges.csv");
         ClusteringAlgorithm clusteringAlgorithm = new ClusteringAlgorithm(graph);
-        complexCSVGraph.visualizeGraph(graph);
+        //ClusteringAlgorithmInitalGraph clusteringAlgorithmInitalGraph = new ClusteringAlgorithmInitalGraph(graph);
 
-        complexCSVGraph.showAllVertices();
-        //complexCSVGraph.MST_Prim("Boeing");
+        complexCSVGraph.visualizeGraph(graph, "Complex Graph View");
 
-        //Graph result = clusters.generateMST("Turisme");
-        Graph result = clusteringAlgorithm.generateMST();
-        complexCSVGraph.visualizeGraph(result);
+        //complexCSVGraph.showAllVertices();
 
-        Graph clusters = clusteringAlgorithm.generateClusters(11.0);
-        complexCSVGraph.visualizeGraph(clusters);
+        Graph result = clusteringAlgorithm.generateMST(graph, null, true);
+        complexCSVGraph.visualizeGraph(result, "MST");
+
+        Graph clusters = clusteringAlgorithm.generateClusters(200.0);
+        complexCSVGraph.visualizeGraph(clusters, "CLUSTERS");
 
         System.out.println(clusters);
 

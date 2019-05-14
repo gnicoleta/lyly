@@ -129,7 +129,7 @@ public class CSVGraphHandler {
     }
 
     //public void visualizeGraph(Graph graph) {
-    public void visualizeGraph(Graph graph) {
+    public void visualizeGraph(Graph graph, String window_title) {
         // The Layout<V, E> is parameterized by the vertex and edge types
         Layout<Node, Edge> layout = new FRLayout<>(graph);
         layout.setSize(new Dimension(1000, 1000)); // sets the initial size of the space
@@ -197,7 +197,8 @@ public class CSVGraphHandler {
 
         //vv.getRenderingHints().remove(RenderingHints.KEY_ANTIALIASING);
 
-        JFrame frame = new JFrame("Complex Graph View");
+        //JFrame frame = new JFrame("Complex Graph View");
+        JFrame frame = new JFrame(window_title);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(vv);
         frame.pack();

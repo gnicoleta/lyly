@@ -1,6 +1,7 @@
 package tool;
 
 import com.google.common.collect.Streams;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import edu.uci.ics.jung.algorithms.cluster.BicomponentClusterer;
 import edu.uci.ics.jung.algorithms.cluster.EdgeBetweennessClusterer;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
@@ -27,9 +28,24 @@ public class ClusteringAlgorithm {
         this.graph = graph;
     }
 
+/*
+    public void visitIsolatedNodes(Graph graph, Collection<Node> visited_nodes, Collection<Edge> the_mst_edges) {
+        for(Object n : graph.getVertices())  {
+            if(!visited_nodes.contains(getNode(graph, (Node)n))) {
+                System.out.println("AAAAAAAAAAAAAa " + visited_nodes.size());
+                visited_nodes.add((Node)n);
+                Graph result = generateMST(graph, (Node)n);
+                for(Object e: result.getEdges()) {
+                    the_mst_edges.add((Edge)e);
+                }
+            }
+        }
+    }*/
+
     public Graph generateMST(Object... args) {
         Graph graph = null;
         Node current_node = null;
+        boolean isolated_nodes = false;
 
         int conto = 0;
         if (args.length == 0) {
@@ -53,7 +69,8 @@ public class ClusteringAlgorithm {
 
         try {
             if (args[2] != null) {
-                //System.out.println(" AMU " + args[2]);
+                System.out.println(" AMU " + args[2]);
+                isolated_nodes = true;
             }
         } catch (Exception e) {
 
@@ -121,8 +138,34 @@ public class ClusteringAlgorithm {
         }
         //System.out.println(result.getVertices());
         //System.out.println(result.getEdges());
+
+        System.out.println("INIT: " + graph.getVertexCount());
+        System.out.println("VIZITATE: " + visited_nodes.size());
+
+
+        System.out.println("KKKKKKK " + isolated_nodes);
+        if(isolated_nodes == true) {
+            //visitIsolatedNodes(graph, visited_nodes, the_mst_edges);
+            for(Object o : graph.getVertices()) {
+                if(!visited_nodes.contains((Node)o)) {
+                    System.out.println("ASTA E NEVIZ: " + graph.getIncidentEdges(o));
+                    System.out.println("AAAAAAAAAAAAAa " + visited_nodes.size());
+                    visited_nodes.add((Node)o);
+                    System.out.println("BBBBBB  " + visited_nodes.size());
+                    Graph aux = generateMST(graph, (Node)o);
+                    for(Object e: aux.getEdges()) {
+                        the_mst_edges.add((Edge)e);
+                    }
+                }
+            }
+        }
+
+        System.out.println("INIT2: " + graph.getVertexCount());
+        System.out.println("VIZITATE2: " + visited_nodes.size());
+
         return result;
     }
+
 
     public Graph generateClusters(Double tresshold) {
         this.graph = graph;

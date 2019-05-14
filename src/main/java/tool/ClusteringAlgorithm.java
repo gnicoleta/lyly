@@ -236,11 +236,21 @@ public class ClusteringAlgorithm {
            }
         }
 
+
+        clusters.clear();
+
         for(Edge e : edges_to_remake) {
             edges_to_remove.remove(e);
         }
+        for(Edge e: edges_to_remove) {
+            edges_to_remove_nodesDest.add(e.getEdgeSourceNode());
+            edges_to_remove_nodesDest.add(e.getEdgeDestiantionNode());
+        }
 
-        clusters.clear();
+        System.out.println("EDEEE " + edges_to_remove);
+        System.out.println("NEEE " + edges_to_remove_nodesDest);
+
+        //clusters.clear();
 
 
         for(Node n : edges_to_remove_nodesDest) {

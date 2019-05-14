@@ -26,6 +26,7 @@ public class Main {
 
         Graph clusters = clusteringAlgorithm.generateClusters(56.0);
         complexCSVGraph.visualizeGraph(clusters, "CLUSTERS");
+        clusteringAlgorithm.colorClusters(clusteringAlgorithm.getClusters());
         int contor = 0;
         for (Graph g : clusteringAlgorithm.getClusters()) {
             complexCSVGraph.visualizeGraph(g, "CLUSTERS" + contor++);

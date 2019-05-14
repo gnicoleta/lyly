@@ -78,6 +78,13 @@ public class ClusteringAlgorithm {
         } catch (Exception e) {
 
         }
+        try {
+            if (args[3] != null) {
+                System.out.println(" RORO " + args[3]);
+            }
+        } catch (Exception e) {
+
+        }
         Collection<Node> visited_nodes = new ArrayList<>();
         Graph<Node, Edge> result = new UndirectedSparseMultigraph<Node, Edge>() {
         };
@@ -180,7 +187,7 @@ public class ClusteringAlgorithm {
         Collection<Edge> edges_to_remove = new ArrayList<>();
         //ArrayList<Graph> clusters = new ArrayList<>();
 
-        ArrayList<Edge> edges_to_remake = new ArrayList<>();
+        Set<Edge> edges_to_remake = new HashSet<>();
 
         //int contor = 0;
         for (Edge e : edges) {
@@ -228,7 +235,7 @@ public class ClusteringAlgorithm {
                for(Edge e: edges_to_remove) {
                    System.out.println("WHAHA " + e.getEdgeDestiantionNode() + " -- " + e.getEdgeSourceNode() + " ~~~~ " + source + " qq"+ e.getEdgeSourceNode().equals(source));
                    if(e.getEdgeSourceNode().equals(source)|| e.getEdgeDestiantionNode().equals(destination)||e.getEdgeSourceNode().equals(destination)|| e.getEdgeDestiantionNode().equals(source) ) {
-                       result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode(), EdgeType.UNDIRECTED);
+                       //result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode(), EdgeType.UNDIRECTED);
                        edges_to_remake.add(e);
                        //edges_to_remove.remove(e);
                        if(source!= null) {
@@ -245,13 +252,45 @@ public class ClusteringAlgorithm {
 
         clusters.clear();
 
+        Node parent_node_mother_remake = null;
+        Node parent_node_father_remake = null;
+
+        Set<Node> nodes_remade = new HashSet<>();
+        Set<Node> nodes_to_revisit = new HashSet<>();
+
+
         for(Edge e : edges_to_remake) {
             System.out.println("REMAKE: " + e);
             edges_to_remove.remove(e);
+            System.out.println("LLL" + e + " --- " + !(edges_to_remove_nodesDest.contains(e.getEdgeDestiantionNode()) || edges_to_remove_nodesDest.contains(e.getEdgeSourceNode())) + " -- " + !(nodes_remade.contains(e.getEdgeSourceNode()) || nodes_remade.contains(e.getEdgeDestiantionNode())));
+            if (!(edges_to_remove_nodesDest.contains(e.getEdgeDestiantionNode()) || edges_to_remove_nodesDest.contains(e.getEdgeSourceNode())) && !(nodes_remade.contains(e.getEdgeSourceNode()) || nodes_remade.contains(e.getEdgeDestiantionNode()))) {
+
+                result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode());
+                if (generateMST(result, e.getEdgeSourceNode()).getEdgeCount() >= 2) {
+
+                    edges_to_remove.remove(e);
+                    result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode());
+                    System.out.println("AVIOANE: " + e);
+                    nodes_remade.add(e.getEdgeSourceNode());
+                    nodes_to_revisit.add(e.getEdgeDestiantionNode());
+                    //parent_node_mother_remake = e.getEdgeSourceNode();
+                    //parent_node_father_remake = e.getEdgeSourceNode();
+                }
+            }
         }
+
+        System.out.println("REMADE: " + nodes_remade);
+        System.out.println("REVISIT: " + nodes_to_revisit);
+
         for(Edge e: edges_to_remove) {
-            edges_to_remove_nodesDest.add(e.getEdgeSourceNode());
-            edges_to_remove_nodesDest.add(e.getEdgeDestiantionNode());
+            //edges_to_remove_nodesDest.remove(e.getEdgeSourceNode());
+            //edges_to_remove_nodesDest.add(e.getEdgeSourceNode());
+            //edges_to_remove_nodesDest.add(e.getEdgeDestiantionNode());
+            //edges_to_remove_nodesDest.remove(e.getEdgeDestiantionNode());
+        }
+
+        for(Node n : nodes_remade) {
+            edges_to_remove_nodesDest.add(n);
         }
 
         System.out.println("EDEEE " + edges_to_remove);
@@ -262,7 +301,7 @@ public class ClusteringAlgorithm {
 
         for(Node n : edges_to_remove_nodesDest) {
             System.out.println("^^^^^" + n);
-            clusters.add(generateMST(result, getNode(result, n)));
+            clusters.add(generateMST(result, getNode(result, n), null, "MACAROANE"));
         }
         initiazeColorMap(clusters.size());
 
@@ -276,12 +315,16 @@ public class ClusteringAlgorithm {
 //            }
         }
 
-        colorClusters(clusters);
+        //colorClusters(clusters);
 
 
         return result;
         //return clusters;
     }
+
+//    public void checkForDuplicates() {
+//
+//    }
 
     public void colorClusters(Set<Graph> clusters) {
         initiazeColorMap(clusters.size());

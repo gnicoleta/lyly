@@ -1,11 +1,22 @@
 package tool;
 
+import java.awt.*;
+import java.util.Collection;
+
 public class Node {
     String id;
     //String cluster_id;
     Integer cluster_id = 0;
+    Color color = Color.GREEN;
 
     public Node() {
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+    public Color getColor() {
+        return this.color;
     }
 
     public Node(String id) {

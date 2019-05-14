@@ -11,6 +11,7 @@ import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 
+import java.awt.*;
 import java.util.*;
 
 import com.google.common.collect.MoreCollectors;
@@ -19,6 +20,8 @@ public class ClusteringAlgorithm {
 
     Graph graph;
     Graph result;
+    ArrayList<Graph> clusters = new ArrayList<>();
+    Map colorMap = new HashMap();
 
     public ClusteringAlgorithm() {
 
@@ -173,7 +176,7 @@ public class ClusteringAlgorithm {
         Collection<Edge> edges = result.getEdges();
         Set<Node> edges_to_remove_nodesDest = new HashSet<>();
         Collection<Edge> edges_to_remove = new ArrayList<>();
-        ArrayList<Graph> clusters = new ArrayList<>();
+        //ArrayList<Graph> clusters = new ArrayList<>();
 
         ArrayList<Edge> edges_to_remake = new ArrayList<>();
 
@@ -257,23 +260,64 @@ public class ClusteringAlgorithm {
             System.out.println("^^^^^" + n);
             clusters.add(generateMST(result, getNode(result, n)));
         }
+        initiazeColorMap(clusters.size());
 
         System.out.println("CLUSTERS SIZE" + clusters.size());
-        Integer contor = 1;
         for(Graph ge : clusters) {
             System.out.println(" $$$$$$  " + ge.getVertices());
 
-            for(Object n : ge.getVertices()) {
-                ((Node)n).cluster_id = contor;
-            }
+//            for(Object n : ge.getVertices()) {
+//                System.out.println("MACAROANE : " +((Node)n).getCluster_id() );
+//                colorNode(((Node) n).getCluster_id(), (Node)n);
+//            }
         }
 
+        colorClusters();
+
+
         return result;
+        //return clusters;
+    }
+
+    public void colorClusters() {
+        initiazeColorMap(this.clusters.size());
+        int contor = 1;
+
+        System.out.println("MAPA : " + colorMap);
+
+        for(Graph g : clusters) {
+            for(Object n : g.getVertices()) {
+                ((Node)n).setCluster_id(contor);
+                colorNode(((Node) n).getCluster_id(), (Node)n);
+                System.out.println("CASTANE: " + ((Node) n).getCluster_id());
+            }
+            contor++;
+        }
+    }
+
+    public ArrayList<Graph> getCluster() {
+        return this.clusters;
     }
 
 
-    public void colorNode(String color, Node n) {
+    public void colorNode(int cluster_id, Node n) {
         //n.setCluster_id(color);
+        System.out.println("COCO" + colorMap.get(cluster_id));
+        n.setColor((Color)colorMap.get(cluster_id));
+    }
+
+
+    public void initiazeColorMap(Integer no_clusters) {
+        Random rand = new Random();
+        System.out.println("CULORI: " + no_clusters);
+        for(int i = 1; i<=no_clusters; i++) {
+            float r = rand.nextFloat();
+            float g = rand.nextFloat();
+            float b = rand.nextFloat();
+            Color randomColor = new Color(r, g, b);
+            System.out.println("COCOS " + randomColor);
+            colorMap.put(i, randomColor);
+        }
     }
 
     private void cutTresshold(Edge e, Graph g, Double tresshold) {

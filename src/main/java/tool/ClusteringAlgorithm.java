@@ -20,7 +20,7 @@ public class ClusteringAlgorithm {
 
     Graph graph;
     Graph result;
-    ArrayList<Graph> clusters = new ArrayList<>();
+    Set<Graph> clusters = new HashSet<>();
     Map colorMap = new HashMap();
 
     public ClusteringAlgorithm() {
@@ -166,6 +166,8 @@ public class ClusteringAlgorithm {
         System.out.println("INIT2: " + graph.getVertexCount());
         System.out.println("VIZITATE2: " + visited_nodes.size());
 
+        System.out.println("MST: " + result);
+
         return result;
     }
 
@@ -207,7 +209,8 @@ public class ClusteringAlgorithm {
 
 
         for(Graph ge : clusters) {
-           if(ge.getEdgeCount() <= 1) {
+           if(ge.getVertexCount() <= 2) {
+               System.out.println("EU: " + ge);
                Collection<Node> vertices  = ge.getVertices();
                Node source = (Node)vertices.toArray()[0];
                Node destination = null;
@@ -224,7 +227,7 @@ public class ClusteringAlgorithm {
                System.out.println("TATA " + destination);
                for(Edge e: edges_to_remove) {
                    System.out.println("WHAHA " + e.getEdgeDestiantionNode() + " -- " + e.getEdgeSourceNode() + " ~~~~ " + source + " qq"+ e.getEdgeSourceNode().equals(source));
-                   if(e.getEdgeSourceNode().equals(source)|| e.getEdgeDestiantionNode().equals(destination) ) {
+                   if(e.getEdgeSourceNode().equals(source)|| e.getEdgeDestiantionNode().equals(destination)||e.getEdgeSourceNode().equals(destination)|| e.getEdgeDestiantionNode().equals(source) ) {
                        result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode(), EdgeType.UNDIRECTED);
                        edges_to_remake.add(e);
                        //edges_to_remove.remove(e);
@@ -243,6 +246,7 @@ public class ClusteringAlgorithm {
         clusters.clear();
 
         for(Edge e : edges_to_remake) {
+            System.out.println("REMAKE: " + e);
             edges_to_remove.remove(e);
         }
         for(Edge e: edges_to_remove) {
@@ -272,15 +276,15 @@ public class ClusteringAlgorithm {
 //            }
         }
 
-        colorClusters();
+        colorClusters(clusters);
 
 
         return result;
         //return clusters;
     }
 
-    public void colorClusters() {
-        initiazeColorMap(this.clusters.size());
+    public void colorClusters(Set<Graph> clusters) {
+        initiazeColorMap(clusters.size());
         int contor = 1;
 
         System.out.println("MAPA : " + colorMap);
@@ -295,7 +299,7 @@ public class ClusteringAlgorithm {
         }
     }
 
-    public ArrayList<Graph> getCluster() {
+    public Set<Graph> getClusters() {
         return this.clusters;
     }
 
@@ -329,7 +333,7 @@ public class ClusteringAlgorithm {
 
     public static void addEdgesFromVisitedNodes(Collection<Edge> source, Collection<Edge> destination) {
         for (Edge t : source) {
-            destination.add(new Edge(t.getEdgeDestiantionNode(), t.getEdgeSourceNode(), t.getWeight()));
+           destination.add(new Edge(t.getEdgeDestiantionNode(), t.getEdgeSourceNode(), t.getWeight()));
             destination.add(t);
         }
     }

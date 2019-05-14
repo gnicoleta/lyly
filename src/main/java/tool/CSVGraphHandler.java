@@ -9,13 +9,22 @@ import edu.uci.ics.jung.graph.UndirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.util.Context;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
+import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
+import edu.uci.ics.jung.visualization.Layer;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
+import edu.uci.ics.jung.visualization.control.AbstractModalGraphMouse;
+import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
+import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
+import edu.uci.ics.jung.visualization.control.ScalingControl;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
+import edu.uci.ics.jung.visualization.transform.MutableTransformer;
 import lombok.Data;
 import org.apache.commons.collections15.Transformer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -34,6 +43,7 @@ public class CSVGraphHandler {
     public Graph<Node, Edge> graph;
 
     Map nodesMap = new HashMap();
+    private int zoomed_in = 0;
 
     public void removeEdge() {
     }
@@ -125,22 +135,25 @@ public class CSVGraphHandler {
     }
 
     //public void visualizeGraph(Graph graph) {
-    public void visualizeGraph(Graph graph, String window_title, Integer nr_clusters) {
+    public void visualizeGraph(Graph graph, String window_title) {
 //        if(nr_clusters!=null) {
 //            initiazeColorMap(nr_clusters.get());
 //        }
         // The Layout<V, E> is parameterized by the vertex and edge types
+
         Layout<Node, Edge> layout = new FRLayout<>(graph);
         layout.setSize(new Dimension(1000, 1000)); // sets the initial size of the space
 
         // The BasicVisualizationServer<V,E> is parameterized by the edge types
         VisualizationViewer<Node, Edge> vv =
-                new VisualizationViewer<Node, Edge>(layout);
+                new VisualizationViewer<Node, Edge>(layout, new Dimension(800, 800));
 
 
         Transformer<Node, Paint> vertexColor = new Transformer<Node, Paint>() {
-            public Paint transform(Node i) {return i.getColor();}
-                //return Color.GREEN;}
+            public Paint transform(Node i) {
+                return i.getColor();
+            }
+            //return Color.GREEN;}
                 /*if(i.getCluster_id().equals("green")) {
                     return Color.GREEN;
                 } else return Color.RED;
@@ -162,10 +175,9 @@ public class CSVGraphHandler {
             }
         };
 
-        Transformer<Graph<Context<String, String>, String>, Shape> edgeTransformer = new Transformer<Graph<Context<String,String>,String>,Shape>(){
+        Transformer<Graph<Context<String, String>, String>, Shape> edgeTransformer = new Transformer<Graph<Context<String, String>, String>, Shape>() {
             @Override
-            public Shape transform(Graph<Context<String, String>, String> graphStringContext)
-            {
+            public Shape transform(Graph<Context<String, String>, String> graphStringContext) {
                 return (new Line2D.Double());
             }
         };
@@ -198,6 +210,62 @@ public class CSVGraphHandler {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(vv);
         frame.pack();
+
+/*
+        vv.setPreferredSize(new Dimension(800, 800)); //Sets the viewing area size
+        Container content = frame.getContentPane();
+        final GraphZoomScrollPane panel = new GraphZoomScrollPane(vv);
+        content.add(panel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        final AbstractModalGraphMouse graphMouse = new DefaultModalGraphMouse<String, Number>();
+        vv.setGraphMouse(graphMouse);
+        final ScalingControl scaler = new CrossoverScalingControl();
+
+        JButton zoom_in = new JButton("zoom in");
+        zoom_in.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                scaler.scale(vv, (float)2.0, vv.getCenter());
+                zoomed_in++;
+            }
+        });
+
+        JButton zoom_out = new JButton("zoom out");
+        zoom_out.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                scaler.scale(vv, (float)1/(float)2.0, vv.getCenter());
+                zoomed_in--;
+            }
+        });
+
+        JButton reset = new JButton("reset");
+        reset.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                MutableTransformer layout = vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.LAYOUT);
+                layout.setToIdentity();
+                MutableTransformer view = vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW);
+                view.setToIdentity();
+                if (zoomed_in > 0) {
+                    for (int i = 0; i < zoomed_in; i++) {
+                        scaler.scale(vv, (float)1/(float)2.0, vv.getCenter());
+                    }
+                    zoomed_in = 0;
+                }
+                if (zoomed_in < 0) {
+                    zoomed_in = zoomed_in * -1;
+                    for (int i = 0; i < zoomed_in; i++) {
+                        scaler.scale(vv, (float)2.0, vv.getCenter());
+                    }
+                }
+                zoomed_in = 0;
+            }
+        });
+
+        JPanel controls = new JPanel();
+        controls.add(zoom_in);
+        controls.add(zoom_out);
+        controls.add(reset);
+        content.add(controls, BorderLayout.NORTH);
+        content.add(vv);*/
         frame.setVisible(true);
     }
 

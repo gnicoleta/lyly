@@ -13,7 +13,7 @@ public class Main {
         CSVGraphHandler complexCSVGraph = new CSVGraphHandler();
         CSVGraphHandler complexCSVGraph2 = new CSVGraphHandler();
         //Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\bank.jar_edges.csv");
-        Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\bursa.jar_edges.csv");
+        Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\bank.jar_edges.csv");
         ClusteringAlgorithm clusteringAlgorithm = new ClusteringAlgorithm(graph);
         //ClusteringAlgorithmInitalGraph clusteringAlgorithmInitalGraph = new ClusteringAlgorithmInitalGraph(graph);
 
@@ -24,14 +24,15 @@ public class Main {
         Graph result = clusteringAlgorithm.generateMST(graph, null, true);
         complexCSVGraph.visualizeGraph(result, "MST");
 
-        Graph clusters = clusteringAlgorithm.generateClusters(56.0);
+        Graph clusters = clusteringAlgorithm.generateClusters(256.0, 4);
         complexCSVGraph.visualizeGraph(clusters, "CLUSTERS");
-        clusteringAlgorithm.colorClusters(clusteringAlgorithm.getClusters());
+        //clusteringAlgorithm.colorClusters(clusteringAlgorithm.getClusters());
         int contor = 0;
-        for (Graph g : clusteringAlgorithm.getClusters()) {
+        System.out.println("MORP: " + clusteringAlgorithm.getClusters().size());
+        /*for (Graph g : clusteringAlgorithm.getClusters()) {
             complexCSVGraph.visualizeGraph(g, "CLUSTERS" + contor++);
 
-        }
+        }*/
 
         System.out.println(clusters);
 

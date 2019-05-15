@@ -94,7 +94,7 @@ public class SimpleCSVGraph {
     //public void visualizeGraph(Graph graph) {
     public void visualizeGraph() {
         // The Layout<V, E> is parameterized by the vertex and edge types
-        Layout<Integer, String> layout = new KKLayout(this.graph);
+        Layout<Integer, String> layout = new FRLayout<>(this.graph);
         layout.setSize(new Dimension(1000, 1000)); // sets the initial size of the space
         // The BasicVisualizationServer<V,E> is parameterized by the edge types
         BasicVisualizationServer<Integer, String> vv =

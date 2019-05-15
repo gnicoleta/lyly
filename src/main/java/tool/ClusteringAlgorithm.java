@@ -13,8 +13,10 @@ import edu.uci.ics.jung.graph.util.EdgeType;
 
 import java.awt.*;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.google.common.collect.MoreCollectors;
+import sun.java2d.windows.GDIRenderer;
 
 public class ClusteringAlgorithm {
 
@@ -62,13 +64,13 @@ public class ClusteringAlgorithm {
                 //System.out.println("CEAU3" + args[0]);
                 graph = this.graph;
             }
-                if (args[1] instanceof Node) {
-                    current_node = getNode(graph, (Node) args[1]);
-                } else {
-                    current_node = (Node) Streams.findLast(this.graph.getVertices().stream()).get();
-                }
-
+            if (args[1] instanceof Node) {
+                current_node = getNode(graph, (Node) args[1]);
+            } else {
+                current_node = (Node) Streams.findLast(this.graph.getVertices().stream()).get();
             }
+
+        }
 
         try {
             if (args[2] != null) {
@@ -131,10 +133,10 @@ public class ClusteringAlgorithm {
         }
         the_mst_edges.remove(the_mst_edges.size() - 2);
         System.out.println("ABANANAANA" + the_mst_edges.size());
-        if(the_mst_edges.size() == 1) {
+        if (the_mst_edges.size() == 1) {
             System.out.println(the_mst_edges);
-            System.out.println(((Edge)the_mst_edges.toArray()[0]).getEdgeDestiantionNode());
-            result.addVertex(((Edge)the_mst_edges.toArray()[0]).getEdgeDestiantionNode());
+            System.out.println(((Edge) the_mst_edges.toArray()[0]).getEdgeDestiantionNode());
+            result.addVertex(((Edge) the_mst_edges.toArray()[0]).getEdgeDestiantionNode());
             //the_mst_edges.add(new Edge())
         }
         /*for (Edge tt : the_mst_edges) {
@@ -154,17 +156,17 @@ public class ClusteringAlgorithm {
 
 
         System.out.println("KKKKKKK " + isolated_nodes);
-        if(isolated_nodes == true) {
+        if (isolated_nodes == true) {
             //visitIsolatedNodes(graph, visited_nodes, the_mst_edges);
-            for(Object o : graph.getVertices()) {
-                if(!visited_nodes.contains((Node)o)) {
+            for (Object o : graph.getVertices()) {
+                if (!visited_nodes.contains((Node) o)) {
                     System.out.println("ASTA E NEVIZ: " + graph.getIncidentEdges(o));
                     System.out.println("AAAAAAAAAAAAAa " + visited_nodes.size());
-                    visited_nodes.add((Node)o);
+                    visited_nodes.add((Node) o);
                     System.out.println("BBBBBB  " + visited_nodes.size());
-                    Graph aux = generateMST(graph, (Node)o);
-                    for(Object e: aux.getEdges()) {
-                        the_mst_edges.add((Edge)e);
+                    Graph aux = generateMST(graph, (Node) o);
+                    for (Object e : aux.getEdges()) {
+                        the_mst_edges.add((Edge) e);
                     }
                 }
             }
@@ -179,12 +181,12 @@ public class ClusteringAlgorithm {
     }
 
 
-    public Graph generateClusters(Double tresshold) {
+    public Graph generateClusters(Double tresshold, int no_kid_cluster) {
         this.graph = graph;
         Graph result = generateMST();
         Collection<Edge> edges = result.getEdges();
         Set<Node> edges_to_remove_nodesDest = new HashSet<>();
-        Collection<Edge> edges_to_remove = new ArrayList<>();
+        Collection<Edge> edges_to_remove = new CopyOnWriteArrayList<>();
         //ArrayList<Graph> clusters = new ArrayList<>();
 
         Set<Edge> edges_to_remake = new HashSet<>();
@@ -204,21 +206,29 @@ public class ClusteringAlgorithm {
             result.removeEdge(ed);
         }
 
-        for(Node n : edges_to_remove_nodesDest) {
+        for (Node n : edges_to_remove_nodesDest) {
             System.out.println("~~~~~~" + n);
-           clusters.add(generateMST(result, getNode(result, n)));
+            clusters.add(generateMST(result, getNode(result, n)));
         }
 
         System.out.println("CLUSTERS SIZE" + clusters.size());
-        for(Graph ge : clusters) {
+        for (Graph ge : clusters) {
             System.out.println(" *****  " + ge.getVertices());
         }
 
+        System.out.println("ALLL REMOVED EDGES INITIAL: " + edges_to_remove);
 
+/*
         for(Graph ge : clusters) {
-           if(ge.getVertexCount() <= 2) {
+            int found = 0;
+           if(ge.getVertexCount() <= no_kid_cluster) {
                System.out.println("EU: " + ge);
                Collection<Node> vertices  = ge.getVertices();
+               Collection<Edge> edgs  = ge.getEdges();
+
+
+
+
                Node source = (Node)vertices.toArray()[0];
                Node destination = null;
                try {
@@ -238,15 +248,109 @@ public class ClusteringAlgorithm {
                        //result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode(), EdgeType.UNDIRECTED);
                        edges_to_remake.add(e);
                        //edges_to_remove.remove(e);
+                       found = 1;
                        if(source!= null) {
                            edges_to_remove_nodesDest.remove(source);
                        }
                        if(destination!= null) {
                            edges_to_remove_nodesDest.remove(destination);
                        }
-                   }
+                   } else {found = 0;}
                }
            }
+        }*/
+
+        for (Graph ge : clusters) {
+            int found = 0;
+            if (ge.getVertexCount() <= no_kid_cluster) {
+                System.out.println("EU: " + ge + " -- " + ge.getVertexCount());
+                Collection<Node> vertices = ge.getVertices();
+                Collection<Edge> edgs = ge.getEdges();
+
+
+                Node source = null;
+                Node destination = null;
+
+                System.out.println("EU TOO: " + edgs.size());
+
+
+                for (Edge em : edgs) {
+                    System.out.println(" %% " + ge + "  S_A LUAT EDGEUL: " + em);
+                    try {
+                        source = em.getEdgeSourceNode();
+                        if (source == null) {
+                            source = (Node) vertices.toArray()[0];
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+
+                    }
+                    destination = em.getEdgeDestiantionNode();
+                    if (destination == null) {
+                        destination = source;
+                    }
+
+
+                    System.out.println("MAMA " + source);
+                    System.out.println("TATA " + destination);
+                    for (Edge e : edges_to_remove) {
+                        //System.out.println("WHAHA " + e.getEdgeDestiantionNode() + " -- " + e.getEdgeSourceNode() + " ~~~~ " + source + " qq" + e.getEdgeSourceNode().equals(source));
+                        //if (e.getEdgeSourceNode().equals(source) || e.getEdgeDestiantionNode().equals(destination) || e.getEdgeSourceNode().equals(destination) || e.getEdgeDestiantionNode().equals(source)) {
+                        if (e.getEdgeSourceNode().equals(source) || e.getEdgeDestiantionNode().equals(destination)) {
+                            //result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode(), EdgeType.UNDIRECTED);
+                            System.out.println(" DIN CARE SE VA REFACE: " + e);
+                            edges_to_remake.add(e);
+                            //edges_to_remove.remove(e);
+                            found = 1;
+                            if (source != null) {
+                                System.out.println("REMOVED: soureced: " + source + " din edge: " + e);
+                                edges_to_remove_nodesDest.remove(source);
+                            }
+                            if (destination != null) {
+                                System.out.println("REMOVED: soureced: " + source + " din edge: " + e);
+                                edges_to_remove_nodesDest.remove(destination);
+                            }
+                        } else {
+                            found = 0;
+                        }
+                    }
+                }
+                if (edgs.size() == 0) {
+                    try {
+                        if (source == null) {
+                            source = (Node) vertices.toArray()[0];
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+
+                    }
+                    if (destination == null) {
+                        destination = source;
+                    }
+
+                    System.out.println("MAMA " + source);
+                    System.out.println("TATA " + destination);
+                    for (Edge e : edges_to_remove) {
+                        System.out.println("WHAHA " + e.getEdgeDestiantionNode() + " -- " + e.getEdgeSourceNode() + " ~~~~ " + source + " qq" + e.getEdgeSourceNode().equals(source));
+                        //if (e.getEdgeSourceNode().equals(source) || e.getEdgeDestiantionNode().equals(destination) || e.getEdgeSourceNode().equals(destination) || e.getEdgeDestiantionNode().equals(source)) {
+                        if (e.getEdgeSourceNode().equals(source) || e.getEdgeDestiantionNode().equals(destination)) {
+                            //result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode(), EdgeType.UNDIRECTED);
+                            System.out.println(" DIN CARE SE VA REFACE: " + e);
+                            edges_to_remake.add(e);
+                            //edges_to_remove.remove(e);
+                            found = 1;
+                            if (source != null) {
+                                System.out.println("REMOVED: soureced: " + source + " din edge: " + e);
+                                edges_to_remove_nodesDest.remove(source);
+                            }
+                            if (destination != null) {
+                                System.out.println("REMOVED: soureced: " + source + " din edge: " + e);
+                                edges_to_remove_nodesDest.remove(destination);
+                            }
+                        } else {
+                            found = 0;
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -258,16 +362,31 @@ public class ClusteringAlgorithm {
         Set<Node> nodes_remade = new HashSet<>();
         Set<Node> nodes_to_revisit = new HashSet<>();
 
+        System.out.println(" EDEGES NODE DEST : " + edges_to_remove_nodesDest);
+        System.out.println(" EDEGES REMOVE NOW : " + edges_to_remove);
+        System.out.println(" EDEGES REMAKE NOW : " + edges_to_remake);
 
-        for(Edge e : edges_to_remake) {
+        System.out.println("NEDES " + nodes_remade);
+
+
+        for (Edge e : edges_to_remake) {
             System.out.println("REMAKE: " + e);
-            edges_to_remove.remove(e);
-            System.out.println("LLL" + e + " --- " + !(edges_to_remove_nodesDest.contains(e.getEdgeDestiantionNode()) || edges_to_remove_nodesDest.contains(e.getEdgeSourceNode())) + " -- " + !(nodes_remade.contains(e.getEdgeSourceNode()) || nodes_remade.contains(e.getEdgeDestiantionNode())));
-            if (!(edges_to_remove_nodesDest.contains(e.getEdgeDestiantionNode()) || edges_to_remove_nodesDest.contains(e.getEdgeSourceNode())) && !(nodes_remade.contains(e.getEdgeSourceNode()) || nodes_remade.contains(e.getEdgeDestiantionNode()))) {
+            //edges_to_remove.remove(e);
+            System.out.println("LLLL" + e + " --- " + !(edges_to_remove_nodesDest.contains(e.getEdgeDestiantionNode()) || edges_to_remove_nodesDest.contains(e.getEdgeSourceNode())) + " -- " + !(nodes_remade.contains(e.getEdgeSourceNode()) || nodes_remade.contains(e.getEdgeDestiantionNode())));
+            //if (!(edges_to_remove_nodesDest.contains(e.getEdgeDestiantionNode()) || edges_to_remove_nodesDest.contains(e.getEdgeSourceNode())) && !(nodes_remade.contains(e.getEdgeSourceNode()) || nodes_remade.contains(e.getEdgeDestiantionNode()))) {
 
+            if (!(edges_to_remove_nodesDest.contains(e.getEdgeDestiantionNode())) && !(nodes_remade.contains(e.getEdgeSourceNode()) || nodes_remade.contains(e.getEdgeDestiantionNode()))) {
+
+                //if (!(nodes_remade.contains(e.getEdgeSourceNode()) || nodes_remade.contains(e.getEdgeDestiantionNode()))) {
+
+                System.out.println("DE AICI: " + e.getEdgeSourceNode());
+                edges_to_remove.remove(e);
                 result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode());
-                if (generateMST(result, e.getEdgeSourceNode()).getEdgeCount() >= 2) {
+                int new_clst_size = generateMST(result, e.getEdgeSourceNode()).getVertexCount();
+                System.out.println("NEW CLST SIZE: " + new_clst_size + "  e: " + e);
+                if (new_clst_size <= no_kid_cluster) {
 
+                    System.out.println("ASTA SE ADUAGA: " + e + " ok: " + edges_to_remove.contains(e) + " sura: " + e.getEdgeSourceNode() + " det: " + e.getEdgeDestiantionNode());
                     edges_to_remove.remove(e);
                     result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode());
                     System.out.println("AVIOANE: " + e);
@@ -275,6 +394,8 @@ public class ClusteringAlgorithm {
                     nodes_to_revisit.add(e.getEdgeDestiantionNode());
                     //parent_node_mother_remake = e.getEdgeSourceNode();
                     //parent_node_father_remake = e.getEdgeSourceNode();
+                } else if (new_clst_size > no_kid_cluster) {
+                    System.out.println("CNAD e MAI MARE: " + edges_to_remove + " EDGEUL CURENT " + e);
                 }
             }
         }
@@ -282,40 +403,111 @@ public class ClusteringAlgorithm {
         System.out.println("REMADE: " + nodes_remade);
         System.out.println("REVISIT: " + nodes_to_revisit);
 
-        for(Edge e: edges_to_remove) {
+        System.out.println(" REMO " + edges_to_remove);
+
+        for (Edge e : edges_to_remove) {
             //edges_to_remove_nodesDest.remove(e.getEdgeSourceNode());
-            //edges_to_remove_nodesDest.add(e.getEdgeSourceNode());
-            //edges_to_remove_nodesDest.add(e.getEdgeDestiantionNode());
+            edges_to_remove_nodesDest.add(e.getEdgeSourceNode());
+            edges_to_remove_nodesDest.add(e.getEdgeDestiantionNode());
             //edges_to_remove_nodesDest.remove(e.getEdgeDestiantionNode());
         }
 
-        for(Node n : nodes_remade) {
+        for (Node n : nodes_remade) {
             edges_to_remove_nodesDest.add(n);
         }
 
         System.out.println("EDEEE " + edges_to_remove);
         System.out.println("NEEE " + edges_to_remove_nodesDest);
 
+
         //clusters.clear();
 
 
-        for(Node n : edges_to_remove_nodesDest) {
+        for (Node n : edges_to_remove_nodesDest) {
             System.out.println("^^^^^" + n);
             clusters.add(generateMST(result, getNode(result, n), null, "MACAROANE"));
         }
-        initiazeColorMap(clusters.size());
+
 
         System.out.println("CLUSTERS SIZE" + clusters.size());
-        for(Graph ge : clusters) {
-            System.out.println(" $$$$$$  " + ge.getVertices());
-
-//            for(Object n : ge.getVertices()) {
-//                System.out.println("MACAROANE : " +((Node)n).getCluster_id() );
-//                colorNode(((Node) n).getCluster_id(), (Node)n);
-//            }
+        for (Graph ge : clusters) {
+            System.out.println(" ))))   " + ge.getVertices());
         }
 
+
+        for (Graph ge : clusters) {
+            if (ge.getVertexCount() <= no_kid_cluster) {
+                /*Iterator<Edge> e = edges_to_remove.iterator();
+                while(e.hasNext()) {
+                    for(Node n : vertices) {
+                        System.out.println("PAPA: " + e.getEdgeSourceNode() + " cu "+ n + " -- ok: " + (e.getEdgeSourceNode() == n));
+                        if(e.getEdgeSourceNode() == n || e.getEdgeDestiantionNode() == n) {
+
+                            System.out.println("2PAPA: " + n);
+                            result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode());
+                            edges_to_remove.remove(e);
+                            edges_to_remove_nodesDest.remove(n);
+                        }
+                    }
+                }*/
+                for (Edge e : edges_to_remove) {
+                    //System.out.println("PAPA: " + e.getEdgeSourceNode() + " cu "+ n + " -- ok: " + (e.getEdgeSourceNode() == n));
+
+                    if (generateMST(result, e.getEdgeSourceNode()).getVertexCount() <= no_kid_cluster || generateMST(result, e.getEdgeDestiantionNode()).getVertexCount() <= no_kid_cluster) {
+                        //if(e.getEdgeSourceNode() == n) {
+
+                        System.out.println("2PAPA: " + e);
+                        result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode());
+                        edges_to_remove.remove(e);
+                        //edges_to_remove_nodesDest.remove(n);
+                    }
+                }
+            }
+        }
+
+        System.out.println(" REMO " + edges_to_remove);
+
+        clusters.clear();
+
+
+        for (Node n : edges_to_remove_nodesDest) {
+            System.out.println("2^^^^^" + n);
+            clusters.add(generateMST(result, getNode(result, n), null, "MACAROANE CU AVIOANE"));
+        }
+
+
+     /*   System.out.println("CLUSTERS SIZE" + clusters.size());
+        for(Graph ge : clusters) {
+            System.out.println(" $$$$$$  " + ge.hashCode()+ " -- " + ge.getVertices());
+        }*/
+
         //colorClusters(clusters);
+        ArrayList<Graph> to_remove_clst = new ArrayList<>();
+        for (int i = 0; i < clusters.size(); i++) {
+            for (int j = i + 1; j < clusters.size(); j++) {
+                to_remove_clst.add(removeDupl((Graph) clusters.toArray()[i], (Graph) clusters.toArray()[j]));
+            }
+        }
+
+        for (Graph g : to_remove_clst) {
+            if (g == null) continue;
+            clusters.remove(g);
+            System.out.println(" HASH: " + g.hashCode() + " --0 " + g);
+        }
+
+
+        int clst_id = 0;
+        initiazeColorMap(clusters.size());
+        System.out.println("CLUSTERS SIZE" + clusters.size());
+        for (Graph ge : clusters) {
+            System.out.println(" $$$$$$  " + ge.hashCode() + " -- " + ge.getVertices());
+            clst_id++;
+            for (Object n : ge.getVertices()) {
+                ((Node) n).setCluster_id(clst_id);
+                System.out.println("MACAROANE : " + ((Node) n).getCluster_id());
+                colorNode(((Node) n).getCluster_id(), (Node) n);
+            }
+        }
 
 
         return result;
@@ -332,10 +524,10 @@ public class ClusteringAlgorithm {
 
         System.out.println("MAPA : " + colorMap);
 
-        for(Graph g : clusters) {
-            for(Object n : g.getVertices()) {
-                ((Node)n).setCluster_id(contor);
-                colorNode(((Node) n).getCluster_id(), (Node)n);
+        for (Graph g : clusters) {
+            for (Object n : g.getVertices()) {
+                ((Node) n).setCluster_id(contor);
+                colorNode(((Node) n).getCluster_id(), (Node) n);
                 System.out.println("CASTANE: " + ((Node) n).getCluster_id());
             }
             contor++;
@@ -350,14 +542,14 @@ public class ClusteringAlgorithm {
     public void colorNode(int cluster_id, Node n) {
         //n.setCluster_id(color);
         System.out.println("COCO" + colorMap.get(cluster_id));
-        n.setColor((Color)colorMap.get(cluster_id));
+        n.setColor((Color) colorMap.get(cluster_id));
     }
 
 
     public void initiazeColorMap(Integer no_clusters) {
         Random rand = new Random();
         System.out.println("CULORI: " + no_clusters);
-        for(int i = 1; i<=no_clusters; i++) {
+        for (int i = 1; i <= no_clusters; i++) {
             float r = rand.nextFloat();
             float g = rand.nextFloat();
             float b = rand.nextFloat();
@@ -376,7 +568,7 @@ public class ClusteringAlgorithm {
 
     public static void addEdgesFromVisitedNodes(Collection<Edge> source, Collection<Edge> destination) {
         for (Edge t : source) {
-           destination.add(new Edge(t.getEdgeDestiantionNode(), t.getEdgeSourceNode(), t.getWeight()));
+            destination.add(new Edge(t.getEdgeDestiantionNode(), t.getEdgeSourceNode(), t.getWeight()));
             destination.add(t);
         }
     }
@@ -393,6 +585,31 @@ public class ClusteringAlgorithm {
             }
         }
         return null;
+    }
+
+
+    public Graph removeDupl(Graph one, Graph two) {
+
+        Collection<Node> nodes_one = new ArrayList();
+        Collection<Node> nodes_two = new ArrayList();
+
+        nodes_one = one.getVertices();
+        nodes_two = two.getVertices();
+
+        int contor = 0;
+
+        if (nodes_one.size() == nodes_two.size()) {
+            for (Node n : nodes_one) {
+                if (nodes_two.contains(n)) {
+                    contor++;
+                }
+            }
+            if (contor == nodes_one.size()) {
+                return one;
+            } else return null;
+        }
+        return null;
+
     }
 
 }

@@ -211,6 +211,11 @@ public class CSVGraphHandler {
         frame.getContentPane().add(vv);
         frame.pack();
 
+        final AbstractModalGraphMouse graphMouse = new DefaultModalGraphMouse<String, Number>();
+        vv.setGraphMouse(graphMouse);
+        vv.addKeyListener(graphMouse.getModeKeyListener());
+        vv.setToolTipText("<html><center>Type 'p' for Pick mode<p>Type 't' for Transform mode");
+
 /*
         vv.setPreferredSize(new Dimension(800, 800)); //Sets the viewing area size
         Container content = frame.getContentPane();
@@ -219,6 +224,10 @@ public class CSVGraphHandler {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         final AbstractModalGraphMouse graphMouse = new DefaultModalGraphMouse<String, Number>();
         vv.setGraphMouse(graphMouse);
+
+        vv.addKeyListener(graphMouse.getModeKeyListener());
+        vv.setToolTipText("<html><center>Type 'p' for Pick mode<p>Type 't' for Transform mode");
+
         final ScalingControl scaler = new CrossoverScalingControl();
 
         JButton zoom_in = new JButton("zoom in");

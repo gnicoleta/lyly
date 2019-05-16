@@ -132,9 +132,9 @@ public class ClusteringAlgorithm {
         return result;
     }
 
-
+/*
     public Graph generateClusters(Double tresshold, int no_kid_cluster) {
-        this.graph = graph;
+        this.graph = graph;//inital graph
         Graph result = generateMST();
         Collection<Edge> edges = result.getEdges();
         Set<Node> edges_to_remove_nodesDest = new HashSet<>();
@@ -166,19 +166,42 @@ public class ClusteringAlgorithm {
         //now I check for baby clusters
         //in the method signature you can give a limit number of nodes that a cluster should have
         //parse the clusters list and check if the clusters have the no of nodes > no limit given
+        //System.out.println("CLUSTERS: " + clusters);
         for (Graph ge : clusters) {
             if (ge.getVertexCount() <= no_kid_cluster) {
                 Collection<Node> vertices = ge.getVertices();
 
                 //contains all the edges of the current baby cluster that has no of nodes <= no of nodes limit (given by user)
                 Collection<Edge> edgs = ge.getEdges();
-
-
                 Node source = null;
                 Node destination = null;
 
+                //from all the edges of the baby cluster we choose the veaviest one
+                if (edgs.size() > 0) {
+                    double MAX = Integer.MIN_VALUE;
+                    Edge heaviest_edge = null;
+                    for (Edge em : edgs) {
+                        if (em.getWeight() > MAX) {
+                            MAX = em.getWeight();
+                            heaviest_edge = em;
+                        }
+                    }
+                    try {
+                        source = heaviest_edge.getEdgeSourceNode();
+                        if (source == null) {
+                            source = (Node) vertices.toArray()[0];
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                    }
+                    destination = heaviest_edge.getEdgeDestiantionNode();
+                    if (destination == null) {
+                        destination = source;
+                    }
+                    remakeEdges(edges_to_remove, edges_to_remake, source, destination, edges_to_remove_nodesDest);
+                }
+
                 //parse the list of edges of the current baby cluster
-                for (Edge em : edgs) {
+                /*for (Edge em : edgs) {
                     try {
                         source = em.getEdgeSourceNode();
                         if (source == null) {
@@ -191,10 +214,10 @@ public class ClusteringAlgorithm {
                         destination = source;
                     }
                     remakeEdges(edges_to_remove, edges_to_remake, source, destination, edges_to_remove_nodesDest);
-                }
+                }*/
 
-                //meaning the cluster contains only one node
-                if (edgs.size() == 0) {
+    //meaning the cluster contains only one node
+                /*if (edgs.size() == 0) { //aici
                     try {
                         if (source == null) {
                             source = (Node) vertices.toArray()[0];
@@ -207,6 +230,202 @@ public class ClusteringAlgorithm {
                     }
                     remakeEdges(edges_to_remove, edges_to_remake, source, destination, edges_to_remove_nodesDest);
                 }
+            }
+        }
+
+        //clear the clusters list because I need to redo it
+        clusters.clear();
+        Set<Node> nodes_remade = new HashSet<>();
+        //Set<Node> nodes_to_revisit = new HashSet<>();
+
+        /**
+         * parse the edges to remake, and remove the edges that need to be redone from the edges to remove list
+         * add those edge to the graph itself
+         * check the size of the new cluster to be done
+         * if the size is right I need to keep track of the nodes I should revisit
+         * */
+        /*for (Edge e : edges_to_remake) { //aici
+            if (!(edges_to_remove_nodesDest.contains(e.getEdgeDestiantionNode())) && !(nodes_remade.contains(e.getEdgeSourceNode()) || nodes_remade.contains(e.getEdgeDestiantionNode()))) {
+                edges_to_remove.remove(e);
+                result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode());
+                int new_clst_size = generateMST(result, e.getEdgeSourceNode()).getVertexCount();
+                if (new_clst_size <= no_kid_cluster) {
+                    edges_to_remove.remove(e);
+                    result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode());
+                    nodes_remade.add(e.getEdgeSourceNode());
+                    //nodes_to_revisit.add(e.getEdgeDestiantionNode());
+                } else if (new_clst_size > no_kid_cluster) {
+                    //System.out.println("CNAD e MAI MARE: " + edges_to_remove + " EDGEUL CURENT " + e);
+                }
+            }
+        }
+
+        //since I already removed the edges that need to be redone,
+        //the edges that are still in this list mean the cut edges of differemt clusters, and I need to revisit them
+        for (Edge e : edges_to_remove) {
+            edges_to_remove_nodesDest.add(e.getEdgeSourceNode());
+            edges_to_remove_nodesDest.add(e.getEdgeDestiantionNode());
+        }
+
+        edges_to_remove_nodesDest.addAll(nodes_remade);
+
+        //based on the nodes that should be revist, do the clusters
+        for (Node n : edges_to_remove_nodesDest) {
+            clusters.add(generateMST(result, getNode(result, n), null, "MACAROANE"));
+        }
+
+        //check for baby clusters again
+        //redo any remaining edges in the edges_to_remove that will make the baby cluster abide to the given node limit
+        for (Graph ge : clusters) {
+            if (ge.getVertexCount() <= no_kid_cluster) {
+                for (Edge e : edges_to_remove) {
+                    if (generateMST(result, e.getEdgeSourceNode()).getVertexCount() <= no_kid_cluster || generateMST(result, e.getEdgeDestiantionNode()).getVertexCount() <= no_kid_cluster) {
+                        result.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode());
+                        edges_to_remove.remove(e);
+                        //edges_to_remove_nodesDest.remove(n);
+                    }
+                }
+            }
+        }
+
+        //clear the clusters because they need to be redone
+        clusters.clear();
+
+        //do the clusters
+        for (Node n : edges_to_remove_nodesDest) {
+            clusters.add(generateMST(result, getNode(result, n), null, "MACAROANE CU AVIOANE"));
+        }
+
+        //make sure I do not have duplicate clusters (made by same tree but visited from different nodes
+        // the path remains the same, the order is different, their hash will be different but the content of the object is identical)
+        //if there are such clusters, I must remove them
+        ArrayList<Graph> to_remove_clst = new ArrayList<>();
+        for (int i = 0; i < clusters.size(); i++) {
+            for (int j = i + 1; j < clusters.size(); j++) {
+                to_remove_clst.add(removeDupl((Graph) clusters.toArray()[i], (Graph) clusters.toArray()[j]));
+            }
+        }
+        for (Graph g : to_remove_clst) {
+            if (g == null) continue;
+            clusters.remove(g);
+        }
+        colorNodesInClusters(clusters);
+
+        return result;
+    }*/
+
+
+    public Graph generateClusters(Double tresshold, int no_kid_cluster) {
+        this.graph = graph;//inital graph
+        Graph result = generateMST();
+        Collection<Edge> edges = result.getEdges();
+        Set<Node> edges_to_remove_nodesDest = new HashSet<>();
+        Collection<Edge> edges_to_remove = new CopyOnWriteArrayList<>();
+        Set<Edge> edges_to_remake = new HashSet<>();
+
+        //based on the tresshold I add the edges that need to be cut to the edges_to_remove list
+        //everywhere you cut the tree, 2 pieces will remain from the source and destination node of the cut edge
+        //those nodes will be added to a list of nodes that should be raparsed in order to get the clusters
+        for (Edge e : edges) {
+            if (e.getWeight() > tresshold) {
+                edges_to_remove_nodesDest.add(e.getEdgeDestiantionNode());
+                edges_to_remove_nodesDest.add(e.getEdgeSourceNode());
+                edges_to_remove.add(e);
+            }
+        }
+
+        //we remove the edges from the MST
+        for (Edge ed : edges_to_remove) {
+            result.removeEdge(ed);
+        }
+
+        //revisit the tree from the splitted ends of the cut edge
+        //add those clusters to clusters list
+        for (Node n : edges_to_remove_nodesDest) {
+            clusters.add(generateMST(result, getNode(result, n)));
+        }
+
+        //now I check for baby clusters
+        //in the method signature you can give a limit number of nodes that a cluster should have
+        //parse the clusters list and check if the clusters have the no of nodes > no limit given
+        //System.out.println("CLUSTERS: " + clusters);
+        for (Graph ge : clusters) {
+            if (ge.getVertexCount() <= no_kid_cluster) {
+                Collection<Node> vertices = ge.getVertices();
+
+                //contains all the edges of the current baby cluster that has no of nodes <= no of nodes limit (given by user)
+
+                Collection<Node> all_nodes_from_baby_cluster = ge.getVertices();
+                Collection<Edge> all_edged_from_baby_cluster = ge.getEdges(); //edges from within the cluster
+                //Collection<Edge> edgs = ge.getEdges();
+                Collection<Edge> edgs = new ArrayList<>();
+
+                for (Node n : all_nodes_from_baby_cluster) {
+                    edgs.addAll(this.graph.getIncidentEdges(getNode(this.graph, n)));
+                }
+
+                for (Edge e : all_edged_from_baby_cluster) {
+                    edgs.remove(e); //edges from outside the cluster, those who were previous broken
+                }
+
+                Node source = null;
+                Node destination = null;
+
+                //from all the edges (that were broken) of the baby cluster we choose the heaviest one
+                if (edgs.size() > 0) {
+                    double MAX = Integer.MIN_VALUE;
+                    Edge heaviest_edge = null;
+                    for (Edge em : edgs) {
+                        if (em.getWeight() > MAX) {
+                            MAX = em.getWeight();
+                            heaviest_edge = em;
+                        }
+                    }
+                    try {
+                        source = heaviest_edge.getEdgeSourceNode();
+                        if (source == null) {
+                            source = (Node) vertices.toArray()[0];
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                    }
+                    destination = heaviest_edge.getEdgeDestiantionNode();
+                    if (destination == null) {
+                        destination = source;
+                    }
+                    remakeEdges(edges_to_remove, edges_to_remake, source, destination, edges_to_remove_nodesDest);
+                }
+
+                //parse the list of edges of the current baby cluster
+                /*for (Edge em : edgs) {
+                    try {
+                        source = em.getEdgeSourceNode();
+                        if (source == null) {
+                            source = (Node) vertices.toArray()[0];
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                    }
+                    destination = em.getEdgeDestiantionNode();
+                    if (destination == null) {
+                        destination = source;
+                    }
+                    remakeEdges(edges_to_remove, edges_to_remake, source, destination, edges_to_remove_nodesDest);
+                }*/
+
+                //meaning the cluster contains only one node
+                /*if (edgs.size() == 0) {
+                    System.out.println("ODATA e AICI");
+                    try {
+                        if (source == null) {
+                            source = (Node) vertices.toArray()[0];
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+
+                    }
+                    if (destination == null) {
+                        destination = source;
+                    }
+                    remakeEdges(edges_to_remove, edges_to_remake, source, destination, edges_to_remove_nodesDest);
+                }*/
             }
         }
 
@@ -373,6 +592,47 @@ public class ClusteringAlgorithm {
         }
         threshold = threshold / edges.size();
         return threshold;
+    }
+
+    public void computeMQ(Graph initialGraph, Set<Graph> clusters) {
+        Collection<Edge> intraedges = new ArrayList<>(); //intern edges in a cluster
+        HashMap<Graph, Double> clusters_mq = new HashMap<>();
+        for (Graph cluster : clusters) {
+            intraedges = cluster.getEdges();
+            Collection<Node> nodes = cluster.getVertices();
+            Collection<Edge> interedges = new ArrayList<>(); //external edges between this cluster and other clusters
+
+            //for each node in the cluster, we get its inital state from the initial graph
+            //and add all of its edges to the interedges
+            //interedges at first will contain all the edges of the cluster from the initial place in the initial graph
+            for (Node n : nodes) {
+                Node node = getNode(initialGraph, n);
+                interedges.addAll(graph.getIncidentEdges(node));
+            }
+
+            //we now remove the intraedges (internal edges) from the initial interedges (tthat contains ALL the edges)
+            //after this the interedges will contain only the external edges of a cluster
+            for (Edge e : intraedges) {
+                interedges.remove(e);
+            }
+
+            double internal_edges_sum = 0;
+            double external_edges_sum = 0;
+            for (Edge e : intraedges) {
+                internal_edges_sum += e.getWeight();
+            }
+            for (Edge e : interedges) {
+                external_edges_sum += e.getWeight();
+            }
+            double mq = 2 * internal_edges_sum / (2 * internal_edges_sum + external_edges_sum);
+            clusters_mq.put(cluster, mq);
+        }
+        Iterator<Graph> keySetIterator = clusters_mq.keySet().iterator();
+
+        while (keySetIterator.hasNext()) {
+            Graph key = keySetIterator.next();
+            System.out.println("key: " + key.hashCode() + " value: " + clusters_mq.get(key));
+        }
     }
 
     private void cutTresshold(Edge e, Graph g, Double tresshold) {

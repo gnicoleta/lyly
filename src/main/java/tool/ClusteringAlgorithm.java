@@ -32,6 +32,7 @@ public class ClusteringAlgorithm {
     public ClusteringAlgorithm(Graph graph) {
         this.graph = graph;
     }
+
     public void setGraph(Graph g) {
         this.graph = g;
     }
@@ -597,9 +598,10 @@ public class ClusteringAlgorithm {
         return threshold;
     }
 
-    public void computeMQ(Graph initialGraph, Set<Graph> clusters) {
+    public double computeMQ(Graph initialGraph, Set<Graph> clusters) {
         Collection<Edge> intraedges = new ArrayList<>(); //intern edges in a cluster
         HashMap<Graph, Double> clusters_mq = new HashMap<>();
+        double system_mq = 0;
         for (Graph cluster : clusters) {
             intraedges = cluster.getEdges();
             Collection<Node> nodes = cluster.getVertices();
@@ -635,7 +637,10 @@ public class ClusteringAlgorithm {
         while (keySetIterator.hasNext()) {
             Graph key = keySetIterator.next();
             System.out.println("key: " + key.hashCode() + " value: " + clusters_mq.get(key));
+            system_mq += clusters_mq.get(key);
         }
+        System.out.println("TOTAL MQ: " + system_mq);
+        return system_mq;
     }
 
     private void cutTresshold(Edge e, Graph g, Double tresshold) {

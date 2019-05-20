@@ -396,6 +396,11 @@ public class CSVGraphHandler {
         controls.add(tresshold);
         controls.add(minNodesInCluster);
         Container content = newFrame.getContentPane();
+        //JLabel label = new JLabel("MQ: " + clusteringAlgorithm.computeMQ(graph, clusteringAlgorithm.getClusters()), JLabel.BOTTOM);
+        //label.setHorizontalAlignment(JLabel.BOTTOM);
+        //newFrame.add(label);
+        JLabel label = new JLabel("MQ: " + clusteringAlgorithm.computeMQ(graph, clusteringAlgorithm.getClusters()));
+        newFrame.add(label, BorderLayout.NORTH);
         content.add(controls, BorderLayout.SOUTH);
     }
 

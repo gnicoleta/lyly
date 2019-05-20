@@ -32,6 +32,9 @@ public class ClusteringAlgorithm {
     public ClusteringAlgorithm(Graph graph) {
         this.graph = graph;
     }
+    public void setGraph(Graph g) {
+        this.graph = g;
+    }
 
     public Graph generateMST(Object... args) {
         Graph graph = null;

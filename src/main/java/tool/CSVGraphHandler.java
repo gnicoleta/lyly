@@ -45,6 +45,21 @@ public class CSVGraphHandler {
     Map nodesMap = new HashMap();
     private int zoomed_in = 0;
 
+    JTextField tresshold = new JTextField(10);
+    JTextField minNodesInCluster = new JTextField(10);
+
+    ClusteringAlgorithm clusteringAlgorithm = new ClusteringAlgorithm();
+
+    public void setTressholdInputField(double value) {
+        tresshold.setText("Tresshold: " + value);
+    }
+
+
+    public void setMinNodesInCluster(double value) {
+
+        minNodesInCluster.setText("No. of nodes: " + value);
+    }
+
     public void removeEdge() {
     }
 
@@ -135,7 +150,7 @@ public class CSVGraphHandler {
     }
 
     //public void visualizeGraph(Graph graph) {
-    public void visualizeGraph(Graph graph, String window_title) {
+    public JFrame visualizeGraph(Graph graph, String window_title) {
 //        if(nr_clusters!=null) {
 //            initiazeColorMap(nr_clusters.get());
 //        }
@@ -207,6 +222,7 @@ public class CSVGraphHandler {
 
         //JFrame frame = new JFrame("Complex Graph View");
         JFrame frame = new JFrame(window_title);
+        Container content = frame.getContentPane();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(vv);
         frame.pack();
@@ -275,7 +291,112 @@ public class CSVGraphHandler {
         controls.add(reset);
         content.add(controls, BorderLayout.NORTH);
         content.add(vv);*/
+
+        //jframe interfcae
+
+        String[] objectStrings = {"Triangle", "Box", "Done"};
+        JComboBox objectList = new JComboBox(objectStrings);
+
+
+        //JButton plus = new JButton("+");
+        objectList.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int selectedIndex = objectList.getSelectedIndex();
+                System.out.println(selectedIndex);
+                if (selectedIndex == 2) {
+                    System.exit(0);
+                }
+            }
+        });
+
+        tresshold.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                tresshold.setText("Tresshold: " + tresshold.getText().replaceAll("\\D+", ""));
+                System.out.println(tresshold.getText());
+            }
+        });
+        minNodesInCluster.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                minNodesInCluster.setText("No. of nodes: " + minNodesInCluster.getText().replaceAll("\\D+", ""));
+                System.out.println(minNodesInCluster.getText());
+            }
+        });
+
+        tresshold.setToolTipText("By default is the average of graph weights");
+
+
+        JPanel controls = new JPanel();
+        //controls.add(objectList);
+        //controls.add(tresshold);
+        //controls.add(minNodesInCluster);
+
+        clusteringAlgorithm.setGraph(graph);
+
+        JButton generateMST = new JButton("generate MST");
+        generateMST.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                MSTFrame(clusteringAlgorithm.generateMST(graph, null, true), "MST");
+            }
+        });
+
+        controls.add(generateMST);
+        if(window_title.contains("Graph")) {
+            generateMST.setVisible(true);
+        } else {
+            generateMST.setVisible(false);
+        }
+        content.add(controls, BorderLayout.SOUTH);
+
         frame.setVisible(true);
+
+        return frame;
+    }
+
+    public void MSTFrame(Graph graph, String str) {
+        JFrame newFrame = visualizeGraph(graph, str);
+
+        JPanel controls = new JPanel();
+        double tresshold_val = clusteringAlgorithm.computeTheTressHold(graph);
+        setTressholdInputField(tresshold_val);
+        setMinNodesInCluster(2);
+
+
+        JButton clusterFrameBtn = new JButton("Clusters");
+        clusterFrameBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                clusterFrame(tresshold_val, 2,"CLUSTERS");
+            }
+        });
+
+        controls.add(tresshold);
+        controls.add(minNodesInCluster);
+        controls.add(clusterFrameBtn);
+
+        if(str.contains("MST")) {
+            clusterFrameBtn.setVisible(true);
+        } else {
+            clusterFrameBtn.setVisible(false);
+        }
+
+        Container content = newFrame.getContentPane();
+        content.add(controls, BorderLayout.SOUTH);
+    }
+
+    public void clusterFrame(Double tresshold_value, Integer kids,  String str) {
+        JFrame newFrame = visualizeGraph(graph, str);
+
+        Graph clusters = clusteringAlgorithm.generateClusters(tresshold_value, kids);
+       visualizeGraph(clusters, "CLUSTERS");
+
+        JPanel controls = new JPanel();
+        double tresshold_val = clusteringAlgorithm.computeTheTressHold(graph);
+        setTressholdInputField(tresshold_val);
+        setMinNodesInCluster(2);
+        controls.add(tresshold);
+        controls.add(minNodesInCluster);
+        Container content = newFrame.getContentPane();
+        content.add(controls, BorderLayout.SOUTH);
     }
 
 

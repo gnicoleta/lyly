@@ -50,7 +50,7 @@ public class CSVGraphHandler {
     JTextField tresshold = new JTextField(10);
     JTextField minNodesInCluster = new JTextField(10);
 
-    String[] tresHoldBoxValues = {"25%", "50%", "75%", "100%", "125%", "150%", "175%", "200%"};
+    String[] tresHoldBoxValues = {"default", "25%", "50%", "75%", "125%", "150%", "175%", "200%"};
     JComboBox treshodComboBox = new JComboBox(tresHoldBoxValues);
 
     ClusteringAlgorithm clusteringAlgorithm = new ClusteringAlgorithm();
@@ -366,52 +366,66 @@ public class CSVGraphHandler {
             }
         });
 
+        JLabel treshold_label = new JLabel("Treshold: " + tresshold_val);
+
         treshodComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int selectedIndex = treshodComboBox.getSelectedIndex();
                 System.out.println(selectedIndex + ": " + tresHoldBoxValues[selectedIndex]);
                 if (selectedIndex == 0) {
-                    tresshold_val = 0.25 * init_treshold;
+                    tresshold_val = 1 * init_treshold;
+                    treshold_label.setText("Treshold: " + tresshold_val);
                 }
                 if (selectedIndex == 1) {
-                    tresshold_val = 0.50 * init_treshold;
+                    tresshold_val = 0.25 * init_treshold;
+                    treshold_label.setText("Treshold: " + tresshold_val);
                 }
                 if (selectedIndex == 2) {
-                    tresshold_val = 0.75 * init_treshold;
+                    tresshold_val = 0.50 * init_treshold;
+                    treshold_label.setText("Treshold: " + tresshold_val);
                 }
                 if (selectedIndex == 3) {
-                    tresshold_val = 1 * init_treshold;
+                    tresshold_val = 0.75 * init_treshold;
+                    treshold_label.setText("Treshold: " + tresshold_val);
                 }
                 if (selectedIndex == 4) {
                     tresshold_val = 1.25 * init_treshold;
+                    treshold_label.setText("Treshold: " + tresshold_val);
                 }
                 if (selectedIndex == 5) {
                     tresshold_val = 1.50 * init_treshold;
+                    treshold_label.setText("Treshold: " + tresshold_val);
                 }
                 if (selectedIndex == 6) {
                     tresshold_val = 1.75 * init_treshold;
+                    treshold_label.setText("Treshold: " + tresshold_val);
                 }
                 if (selectedIndex == 7) {
                     tresshold_val = 2 * init_treshold;
+                    treshold_label.setText("Treshold: " + tresshold_val);
                 }
             }
         });
 
-        controls.add(tresshold);
+        //controls.add(tresshold);
         controls.add(treshodComboBox);
         controls.add(minNodesInCluster);
         controls.add(clusterFrameBtn);
 
         if (str.contains("MST")) {
             clusterFrameBtn.setVisible(true);
-            tresshold.setVisible(true);
+            //tresshold.setVisible(true);
             minNodesInCluster.setVisible(true);
             treshodComboBox.setVisible(true);
         } else {
             clusterFrameBtn.setVisible(false);
-            tresshold.setVisible(false);
+            //tresshold.setVisible(false);
             minNodesInCluster.setVisible(false);
         }
+
+
+
+        newFrame.add(treshold_label, BorderLayout.NORTH);
 
         Container content = newFrame.getContentPane();
         content.add(controls, BorderLayout.SOUTH);

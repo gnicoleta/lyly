@@ -341,7 +341,7 @@ public class CSVGraphHandler {
         });
 
         controls.add(generateMST);
-        if(window_title.contains("Graph")) {
+        if (window_title.contains("Graph")) {
             generateMST.setVisible(true);
         } else {
             generateMST.setVisible(false);
@@ -365,7 +365,7 @@ public class CSVGraphHandler {
         JButton clusterFrameBtn = new JButton("Clusters");
         clusterFrameBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                clusterFrame(tresshold_val, 2,"CLUSTERS");
+                clusterFrame(tresshold_val, 2, "CLUSTERS");
             }
         });
 
@@ -373,35 +373,26 @@ public class CSVGraphHandler {
         controls.add(minNodesInCluster);
         controls.add(clusterFrameBtn);
 
-        if(str.contains("MST")) {
+        if (str.contains("MST")) {
             clusterFrameBtn.setVisible(true);
+            tresshold.setVisible(true);
+            minNodesInCluster.setVisible(true);
         } else {
             clusterFrameBtn.setVisible(false);
+            tresshold.setVisible(false);
+            minNodesInCluster.setVisible(false);
         }
 
         Container content = newFrame.getContentPane();
         content.add(controls, BorderLayout.SOUTH);
     }
 
-    public void clusterFrame(Double tresshold_value, Integer kids,  String str) {
-        JFrame newFrame = visualizeGraph(graph, str);
-
+    public void clusterFrame(Double tresshold_value, Integer kids, String str) {
+        //JFrame newFrame = visualizeGraph(graph, str);
         Graph clusters = clusteringAlgorithm.generateClusters(tresshold_value, kids);
-       visualizeGraph(clusters, "CLUSTERS");
-
-        JPanel controls = new JPanel();
-        double tresshold_val = clusteringAlgorithm.computeTheTressHold(graph);
-        setTressholdInputField(tresshold_val);
-        setMinNodesInCluster(2);
-        controls.add(tresshold);
-        controls.add(minNodesInCluster);
-        Container content = newFrame.getContentPane();
-        //JLabel label = new JLabel("MQ: " + clusteringAlgorithm.computeMQ(graph, clusteringAlgorithm.getClusters()), JLabel.BOTTOM);
-        //label.setHorizontalAlignment(JLabel.BOTTOM);
-        //newFrame.add(label);
+        JFrame newFrame = visualizeGraph(clusters, "CLUSTERS");
         JLabel label = new JLabel("MQ: " + clusteringAlgorithm.computeMQ(graph, clusteringAlgorithm.getClusters()));
         newFrame.add(label, BorderLayout.NORTH);
-        content.add(controls, BorderLayout.SOUTH);
     }
 
 

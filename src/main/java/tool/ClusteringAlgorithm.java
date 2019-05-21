@@ -321,6 +321,7 @@ public class ClusteringAlgorithm {
 
     public Graph generateClusters(Double tresshold, int no_kid_cluster) {
         this.graph = graph;//inital graph
+        //System.out.println("GRAPH: " + graph.getVertexCount() + " and " + graph.getEdgeCount());
         Graph result = generateMST();
         Collection<Edge> edges = result.getEdges();
         Set<Node> edges_to_remove_nodesDest = new HashSet<>();

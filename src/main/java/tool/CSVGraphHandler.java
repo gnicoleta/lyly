@@ -45,14 +45,20 @@ public class CSVGraphHandler {
     Map nodesMap = new HashMap();
     private int zoomed_in = 0;
 
+    double tresshold_val = 1;
+
     JTextField tresshold = new JTextField(10);
     JTextField minNodesInCluster = new JTextField(10);
+
+    String[] tresHoldBoxValues = {"25%", "50%", "75%", "100%", "125%", "150%", "175%", "200%"};
+    JComboBox treshodComboBox = new JComboBox(tresHoldBoxValues);
 
     ClusteringAlgorithm clusteringAlgorithm = new ClusteringAlgorithm();
 
     public void setTressholdInputField(double value) {
         tresshold.setText("Tresshold: " + value);
     }
+
 
 
     public void setMinNodesInCluster(double value) {
@@ -357,7 +363,8 @@ public class CSVGraphHandler {
         JFrame newFrame = visualizeGraph(graph, str);
 
         JPanel controls = new JPanel();
-        double tresshold_val = clusteringAlgorithm.computeTheTressHold(graph);
+        double init_treshold = clusteringAlgorithm.computeTheTressHold(graph);
+        tresshold_val = init_treshold;
         setTressholdInputField(tresshold_val);
         setMinNodesInCluster(2);
 
@@ -365,11 +372,43 @@ public class CSVGraphHandler {
         JButton clusterFrameBtn = new JButton("Clusters");
         clusterFrameBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                clusterFrame(tresshold_val, 2, "CLUSTERS");
+                clusterFrame(tresshold_val, 2, "CLUSTERS", graph);
+            }
+        });
+
+        treshodComboBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int selectedIndex = treshodComboBox.getSelectedIndex();
+                System.out.println(selectedIndex + ": " +  tresHoldBoxValues[selectedIndex]);
+                if (selectedIndex == 0) {
+                    tresshold_val = 0.25 * init_treshold;
+                }
+                if (selectedIndex == 1) {
+                    tresshold_val = 0.50 * init_treshold;
+                }
+                if (selectedIndex == 2) {
+                    tresshold_val = 0.75 * init_treshold;
+                }
+                if (selectedIndex == 3) {
+                    tresshold_val = 1 * init_treshold;
+                }
+                if (selectedIndex == 4) {
+                    tresshold_val = 1.25 * init_treshold;
+                }
+                if (selectedIndex == 5) {
+                    tresshold_val = 1.50 * init_treshold;
+                }
+                if (selectedIndex == 6) {
+                    tresshold_val = 1.75 * init_treshold;
+                }
+                if (selectedIndex == 7) {
+                    tresshold_val = 2 * init_treshold;
+                }
             }
         });
 
         controls.add(tresshold);
+        controls.add(treshodComboBox);
         controls.add(minNodesInCluster);
         controls.add(clusterFrameBtn);
 
@@ -377,6 +416,7 @@ public class CSVGraphHandler {
             clusterFrameBtn.setVisible(true);
             tresshold.setVisible(true);
             minNodesInCluster.setVisible(true);
+            treshodComboBox.setVisible(true);
         } else {
             clusterFrameBtn.setVisible(false);
             tresshold.setVisible(false);
@@ -387,8 +427,9 @@ public class CSVGraphHandler {
         content.add(controls, BorderLayout.SOUTH);
     }
 
-    public void clusterFrame(Double tresshold_value, Integer kids, String str) {
+    public void clusterFrame(Double tresshold_value, Integer kids, String str, Graph g) {
         //JFrame newFrame = visualizeGraph(graph, str);
+        clusteringAlgorithm.setGraph(g);
         Graph clusters = clusteringAlgorithm.generateClusters(tresshold_value, kids);
         JFrame newFrame = visualizeGraph(clusters, "CLUSTERS");
         JLabel label = new JLabel("MQ: " + clusteringAlgorithm.computeMQ(graph, clusteringAlgorithm.getClusters()));

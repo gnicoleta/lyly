@@ -19,17 +19,11 @@ public class Main {
         //ClusteringAlgorithmInitalGraph clusteringAlgorithmInitalGraph = new ClusteringAlgorithmInitalGraph(graph);
 
         complexCSVGraph.visualizeGraph(graph, "Complex Graph View");
-
-        //complexCSVGraph.showAllVertices();
-
         Graph result = clusteringAlgorithm.generateMST(graph, null, true);
 
         //double tresshold = clusteringAlgorithm.computeTheTressHold(result);
-
         //complexCSVGraph.setTressholdInputField(tresshold);
         //complexCSVGraph.setMinNodesInCluster(2);
-
-
         //complexCSVGraph.visualizeGraph(result, "MST");
         //complexCSVGraph.newFrame(result, "MST");
 
@@ -40,16 +34,9 @@ public class Main {
         Set<Graph> all_clusters = clusteringAlgorithm.getClusters();
         //clusteringAlgorithm.colorClusters(clusteringAlgorithm.getClusters());
         //System.out.println("Clusters size: " + clusteringAlgorithm.getClusters().size());
-        /*for (Graph g : clusteringAlgorithm.getClusters()) {
-            complexCSVGraph.visualizeGraph(g, "CLUSTERS" + contor++);
-
-        }*/
 
         clusteringAlgorithm.computeMQ(result, all_clusters);
-
         //result.getVertices().stream().forEach(System.out::println);
-
         //System.out.println(clusters);
-
     }
 }

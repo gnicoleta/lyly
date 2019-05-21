@@ -1,6 +1,6 @@
 package tool;
 
-public class Edge{
+public class Edge {
     Node source;
     Node destination;
     double weight;
@@ -18,6 +18,7 @@ public class Edge{
         this.source = source;
         this.destination = destination;
     }
+
     public Edge(Node source, Node destination, double weight) {
         this.weight = weight;
         this.source = source;
@@ -66,6 +67,6 @@ public class Edge{
         // now we know otherObject is a non-null Employee
         Edge other = (Edge) otherObject;
         // test whether the fields have identical values
-        return this.source==other.getEdgeSourceNode() &&  this.destination==other.getEdgeDestiantionNode() && this.weight==other.getWeight() ;
+        return this.source == other.getEdgeSourceNode() && this.destination == other.getEdgeDestiantionNode() && this.weight == other.getWeight();
     }
 }

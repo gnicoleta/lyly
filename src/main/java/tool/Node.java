@@ -15,6 +15,7 @@ public class Node {
     public void setColor(Color color) {
         this.color = color;
     }
+
     public Color getColor() {
         return this.color;
     }
@@ -34,7 +35,7 @@ public class Node {
         return (node_prop);
     }
 
-//    public void setCluster_id(String color) {
+    //    public void setCluster_id(String color) {
 //        this.cluster_id = color;
 //    }
 //    public String getCluster_id() {
@@ -43,6 +44,7 @@ public class Node {
     public void setCluster_id(Integer color) {
         this.cluster_id = color;
     }
+
     public Integer getCluster_id() {
         return cluster_id;
     }

@@ -60,7 +60,6 @@ public class CSVGraphHandler {
     }
 
 
-
     public void setMinNodesInCluster(double value) {
 
         minNodesInCluster.setText("No. of nodes: " + value);
@@ -157,11 +156,7 @@ public class CSVGraphHandler {
 
     //public void visualizeGraph(Graph graph) {
     public JFrame visualizeGraph(Graph graph, String window_title) {
-//        if(nr_clusters!=null) {
-//            initiazeColorMap(nr_clusters.get());
-//        }
         // The Layout<V, E> is parameterized by the vertex and edge types
-
         Layout<Node, Edge> layout = new FRLayout<>(graph);
         layout.setSize(new Dimension(1000, 1000)); // sets the initial size of the space
 
@@ -174,11 +169,6 @@ public class CSVGraphHandler {
             public Paint transform(Node i) {
                 return i.getColor();
             }
-            //return Color.GREEN;}
-                /*if(i.getCluster_id().equals("green")) {
-                    return Color.GREEN;
-                } else return Color.RED;
-            }*/
         };
 
         Transformer<Node, String> vertexLabelTransformer = new Transformer<Node, String>() {
@@ -379,7 +369,7 @@ public class CSVGraphHandler {
         treshodComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int selectedIndex = treshodComboBox.getSelectedIndex();
-                System.out.println(selectedIndex + ": " +  tresHoldBoxValues[selectedIndex]);
+                System.out.println(selectedIndex + ": " + tresHoldBoxValues[selectedIndex]);
                 if (selectedIndex == 0) {
                     tresshold_val = 0.25 * init_treshold;
                 }

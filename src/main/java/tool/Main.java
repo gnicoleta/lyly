@@ -14,12 +14,21 @@ public class Main {
         CSVGraphHandler complexCSVGraph = new CSVGraphHandler();
         CSVGraphHandler complexCSVGraph2 = new CSVGraphHandler();
         //Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\bank.jar_edges.csv");
-        Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\bank.jar_edges.csv");
+        Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\manta-1.9.jar_edges.csv");
         ClusteringAlgorithm clusteringAlgorithm = new ClusteringAlgorithm(graph);
         //ClusteringAlgorithmInitalGraph clusteringAlgorithmInitalGraph = new ClusteringAlgorithmInitalGraph(graph);
 
         complexCSVGraph.visualizeGraph(graph, "Complex Graph View");
         Graph result = clusteringAlgorithm.generateMST(graph, null, true);
+
+
+        InitialSystemStructure initialSystemStructure = new InitialSystemStructure();
+        InitialPackageStructure initialPackageStructure = new InitialPackageStructure();
+        ArrayList<Graph> package_clusters = initialSystemStructure.getInitialStructureOfTheSystem(initialPackageStructure.getPackageStructureOfTheSystem(), graph);
+
+//        for(Graph g: package_clusters) {
+//            System.out.println(g);
+//        }
 
         //double tresshold = clusteringAlgorithm.computeTheTressHold(result);
         //complexCSVGraph.setTressholdInputField(tresshold);

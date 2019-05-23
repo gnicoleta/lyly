@@ -18,13 +18,19 @@ public class Main {
         ClusteringAlgorithm clusteringAlgorithm = new ClusteringAlgorithm(graph);
         //ClusteringAlgorithmInitalGraph clusteringAlgorithmInitalGraph = new ClusteringAlgorithmInitalGraph(graph);
 
-        complexCSVGraph.visualizeGraph(graph, "Complex Graph View");
+        //complexCSVGraph.visualizeGraph(graph, "Complex Graph View");
         Graph result = clusteringAlgorithm.generateMST(graph, null, true);
 
+        GraphVisualization graphVisualization = new GraphVisualization();
+        graphVisualization.visualizeComplexGraphSteps(graph, "Complex Graph View");
+        //System.out.println(graph.getVertices());
 
-        InitialSystemStructure initialSystemStructure = new InitialSystemStructure();
+
+
+        InitialSystemStructure initialSystemStructure = new InitialSystemStructure(graph);
         InitialPackageStructure initialPackageStructure = new InitialPackageStructure();
-        Set<Graph> package_clusters = initialSystemStructure.getInitialStructureOfTheSystem(initialPackageStructure.getPackageStructureOfTheSystem(), graph);
+        Set<Graph> package_clusters = initialSystemStructure.getInitialStructureOfTheSystem(initialPackageStructure.getPackageStructureOfTheSystem("src\\main\\resources\\jars\\manta-1.9.jar"), graph);
+
 
 //        for(Graph g: package_clusters) {
 //            System.out.println(g);
@@ -41,14 +47,20 @@ public class Main {
         //Graph clusters = clusteringAlgorithm.generateClusters(tresshold, 2);
         //complexCSVGraph.visualizeGraph(clusters, "CLUSTERS");
         Set<Graph> all_clusters = clusteringAlgorithm.getClusters();
+        System.out.println("TOOL CLUSTER SIZE: " + clusteringAlgorithm.getClusters().size());
         //clusteringAlgorithm.colorClusters(clusteringAlgorithm.getClusters());
         //System.out.println("Clusters size: " + clusteringAlgorithm.getClusters().size());
 
-        clusteringAlgorithm.computeMQ(graph, all_clusters); //result?
-        System.out.println(all_clusters.size());
-        clusteringAlgorithm.computeMQ(graph, package_clusters);
+        System.out.println("MQ of TOOL: " + clusteringAlgorithm.computeMQ(graph, all_clusters)); //result?
+        System.out.println("MQ of PACKAGES: " + clusteringAlgorithm.computeMQ(graph, package_clusters));
 
-        complexCSVGraph.visualizeGraph(initialSystemStructure.getPackageClustersGraph(), "PACKAGES");
+        System.out.println("PACKAGE CLUSTER SIZE: " + package_clusters.size());
+
+        graphVisualization.visualizeGraph(initialSystemStructure.getPackageClustersGraph(), "PACKAGES", true);
+
+        initialSystemStructure.getPackageClustersMQ();
+
+        //complexCSVGraph.visualizeGraph(initialSystemStructure.getPackageClustersGraph(), "PACKAGES");
         //result.getVertices().stream().forEach(System.out::println);
         //System.out.println(clusters);
     }

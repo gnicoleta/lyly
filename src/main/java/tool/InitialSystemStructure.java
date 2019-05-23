@@ -77,4 +77,24 @@ public class InitialSystemStructure {
         }
         return packages_g;
     }
+
+    public Graph getPackageClustersGraph() {
+        Graph g = new UndirectedSparseMultigraph();
+
+        for(Graph ge : packages_g) {
+            Collection<Node> nodes = ge.getVertices();
+            Collection<Edge> edges = ge.getEdges();
+            for(Node n : nodes) {
+                g.addVertex(n);
+            }
+
+            if(edges.size() > 0) {
+                for(Edge e : edges) {
+                    g.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode(), EdgeType.UNDIRECTED);
+                }
+            }
+        }
+
+        return g;
+    }
 }

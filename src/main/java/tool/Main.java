@@ -47,6 +47,8 @@ public class Main {
         clusteringAlgorithm.computeMQ(graph, all_clusters); //result?
         System.out.println(all_clusters.size());
         clusteringAlgorithm.computeMQ(graph, package_clusters);
+
+        complexCSVGraph.visualizeGraph(initialSystemStructure.getPackageClustersGraph(), "PACKAGES");
         //result.getVertices().stream().forEach(System.out::println);
         //System.out.println(clusters);
     }

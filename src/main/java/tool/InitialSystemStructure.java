@@ -5,18 +5,17 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public class InitialSystemStructure {
-    ArrayList<Graph> packages_g;
+    Set<Graph> packages_g = new HashSet<>();
     ClusteringAlgorithm clusteringAlgorithm = new ClusteringAlgorithm();
 
-    //TODO: Something is wrong, check to see where is the null pointer exception coming from
-    public ArrayList<Graph> getInitialStructureOfTheSystem(HashMap<String, HashSet<String>> packages_classes_structure, Graph tool_graph) {
 
+    int contor = 0;
+
+    //TODO: Something is wrong, check to see where is the null pointer exception coming from
+    public Set<Graph>getInitialStructureOfTheSystem(HashMap<String, HashSet<String>> packages_classes_structure, Graph tool_graph) {
 
         System.out.println("GG" + tool_graph.getEdges());
 
@@ -59,13 +58,23 @@ public class InitialSystemStructure {
 
             System.out.println("package_cluster_graph: "+ package_cluster_graph);
 
-           // packages_g.add(package_cluster_graph);
+            packages_g.add(package_cluster_graph);
 
             //tool_graph.containsVertex()
 
 
         }
-        System.out.println("PACK SIZE: " + packages_g.size());
+        try {
+            //contor ++;
+            System.out.println("PACK SIZE: " + packages_g.size());
+        } catch (NullPointerException e) {
+            System.out.println("cocos: " + contor);
+        }
+
+        for(Graph g: packages_g) {
+            contor++;
+            System.out.println("AAA:" + contor + "  --------    " + g);
+        }
         return packages_g;
     }
 }

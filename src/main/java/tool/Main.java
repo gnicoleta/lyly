@@ -24,7 +24,7 @@ public class Main {
 
         InitialSystemStructure initialSystemStructure = new InitialSystemStructure();
         InitialPackageStructure initialPackageStructure = new InitialPackageStructure();
-        ArrayList<Graph> package_clusters = initialSystemStructure.getInitialStructureOfTheSystem(initialPackageStructure.getPackageStructureOfTheSystem(), graph);
+        Set<Graph> package_clusters = initialSystemStructure.getInitialStructureOfTheSystem(initialPackageStructure.getPackageStructureOfTheSystem(), graph);
 
 //        for(Graph g: package_clusters) {
 //            System.out.println(g);
@@ -44,7 +44,9 @@ public class Main {
         //clusteringAlgorithm.colorClusters(clusteringAlgorithm.getClusters());
         //System.out.println("Clusters size: " + clusteringAlgorithm.getClusters().size());
 
-        clusteringAlgorithm.computeMQ(result, all_clusters);
+        clusteringAlgorithm.computeMQ(graph, all_clusters); //result?
+        System.out.println(all_clusters.size());
+        clusteringAlgorithm.computeMQ(graph, package_clusters);
         //result.getVertices().stream().forEach(System.out::println);
         //System.out.println(clusters);
     }

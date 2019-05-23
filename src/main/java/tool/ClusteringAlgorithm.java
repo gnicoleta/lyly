@@ -23,7 +23,7 @@ public class ClusteringAlgorithm {
     Graph graph;
     Graph result;
     Set<Graph> clusters = new HashSet<>();
-    Map colorMap = new HashMap();
+    //Map colorMap = new HashMap();
 
     public ClusteringAlgorithm() {
 
@@ -329,25 +329,21 @@ public class ClusteringAlgorithm {
      */
     public void colorNodesInClusters(Set<Graph> clusters) {
         int clst_id = 0;
-        initiazeColorMap(clusters.size());
+        Map colorMap = initiazeColorMap(clusters.size());
         for (Graph ge : clusters) {
             clst_id++;
             for (Object n : ge.getVertices()) {
                 ((Node) n).setCluster_id(clst_id);
-                colorNode(((Node) n).getCluster_id(), (Node) n);
+                colorNode(((Node) n).getCluster_id(), (Node) n, colorMap);
             }
         }
     }
 
-    public void colorClusters(Set<Graph> clusters) {
-        initiazeColorMap(clusters.size());
-        int contor = 0;
-        for (Graph g : clusters) {
-            for (Object n : g.getVertices()) {
-                ((Node) n).setCluster_id(contor);
-                colorNode(((Node) n).getCluster_id(), (Node) n);
-            }
-            contor++;
+    public void colorClusters(Graph clusters, String clusterization_type) {
+        Map colorMap = initiazeColorMap(clusters.getVertexCount());
+        Collection<Node> nodes = clusters.getVertices();
+        for (Node n : nodes) {
+            colorNode(((Node) n).getCluster_id(), (Node) n, colorMap);
         }
     }
 
@@ -355,15 +351,17 @@ public class ClusteringAlgorithm {
         return this.clusters;
     }
 
-    public void colorNode(int cluster_id, Node n) {
+    public void colorNode(int cluster_id, Node n, Map colorMap) {
+
         n.setColor((Color) colorMap.get(cluster_id));
     }
 
     /**
      * I initialize the colorMap with different colors for each cluster
      */
-    public void initiazeColorMap(Integer no_clusters) {
+    public Map initiazeColorMap(Integer no_clusters) {
         Random rand = new Random();
+        Map colorMap = new HashMap();
         for (int i = 1; i <= no_clusters; i++) {
             float r = rand.nextFloat();
             float g = rand.nextFloat();
@@ -371,6 +369,7 @@ public class ClusteringAlgorithm {
             Color randomColor = new Color(r, g, b);
             colorMap.put(i, randomColor);
         }
+        return colorMap;
     }
 
     public double computeTheTressHold(Graph graph) {
@@ -397,7 +396,7 @@ public class ClusteringAlgorithm {
             //interedges at first will contain all the edges of the cluster from the initial place in the initial graph
             for (Node n : nodes) {
                 Node node = getNode(initialGraph, n);
-                interedges.addAll(graph.getIncidentEdges(node));
+                interedges.addAll(initialGraph.getIncidentEdges(node));
             }
 
             //we now remove the intraedges (internal edges) from the initial interedges (tthat contains ALL the edges)

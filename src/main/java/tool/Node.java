@@ -8,6 +8,9 @@ public class Node {
     //String cluster_id;
     Integer cluster_id = 0;
     Color color = Color.GREEN;
+    Color package_cluster_color = Color.GRAY;
+
+    String clustering_type = "tool_cluster";
 
     public Node() {
     }

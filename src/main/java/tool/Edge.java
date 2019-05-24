@@ -64,7 +64,7 @@ public class Edge {
         // if the classes don't match, they can't be equal
         if (!getClass().equals(otherObject.getClass()))
             return false;
-        // now we know otherObject is a non-null Employee
+        // now we know otherObject is a non-null Edge
         Edge other = (Edge) otherObject;
         // test whether the fields have identical values
         return this.source == other.getEdgeSourceNode() && this.destination == other.getEdgeDestiantionNode() && this.weight == other.getWeight();

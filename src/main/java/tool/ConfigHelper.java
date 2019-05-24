@@ -81,7 +81,7 @@ public class ConfigHelper {
 
     }
 
-
+/*
     public String getPropValues() throws IOException {
 
         try {
@@ -109,7 +109,7 @@ public class ConfigHelper {
             inputStream.close();
         }
         return result;
-    }
+    } */
 
     public int getPropValuesInt() throws IOException {
 
@@ -130,9 +130,19 @@ public class ConfigHelper {
             String hasReturn = prop.getProperty("hasReturn");
             String hasParameter = prop.getProperty("hasParameter");
             String hasBinding = prop.getProperty("hasBinding");
+            String instantiates = prop.getProperty("instantiates");
+            String hasField = prop.getProperty("hasField");
+            String hasLocalVariable = prop.getProperty("hasLocalVariable");
+            String hasCast = prop.getProperty("hasCast");
+            String numberOfStaticMethodsCalled = prop.getProperty("numberOfStaticMethodsCalled");
+            String StaticMethodsCalled = prop.getProperty("StaticMethodsCalled");
+            String numberOfMethodsCalled = prop.getProperty("numberOfMethodsCalled");
 
 
-            res = Integer.parseInt(hasReturn) + Integer.parseInt(hasParameter) + Integer.parseInt(hasBinding);
+            res = Integer.parseInt(hasReturn) + Integer.parseInt(hasParameter) + Integer.parseInt(hasBinding)
+                    + Integer.parseInt(instantiates) + Integer.parseInt(hasField) + Integer.parseInt(hasLocalVariable)
+                    + Integer.parseInt(hasCast) + Integer.parseInt(numberOfStaticMethodsCalled)
+                    + Integer.parseInt(StaticMethodsCalled) + Integer.parseInt(numberOfMethodsCalled);
         } catch (Exception e) {
             System.out.println("Exception: " + e);
         } finally {

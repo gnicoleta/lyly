@@ -61,7 +61,7 @@ public class Node {
         // if the classes don't match, they can't be equal
         if (!getClass().equals(otherObject.getClass()))
             return false;
-        // now we know otherObject is a non-null Employee
+        // now we know otherObject is a non-null Node
         Node other = (Node) otherObject;
         // test whether the fields have identical values
         return this.id.equals(((Node) other).Node_Property());

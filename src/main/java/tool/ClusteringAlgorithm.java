@@ -421,7 +421,10 @@ public class ClusteringAlgorithm {
         while (keySetIterator.hasNext()) {
             Graph key = keySetIterator.next();
             System.out.println("key: " + key.hashCode() + " value: " + clusters_mq.get(key));
-            system_mq += clusters_mq.get(key);
+            double cluster_CF = clusters_mq.get(key);
+            if(Double.isNaN(cluster_CF)) cluster_CF = 0.0;
+            //system_mq += clusters_mq.get(key);
+            system_mq += cluster_CF;
         }
         System.out.println("TOTAL MQ: " + system_mq);
         return system_mq;

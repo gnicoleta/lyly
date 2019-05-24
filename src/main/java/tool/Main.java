@@ -47,6 +47,10 @@ public class Main {
         //Graph clusters = clusteringAlgorithm.generateClusters(tresshold, 2);
         //complexCSVGraph.visualizeGraph(clusters, "CLUSTERS");
         Set<Graph> all_clusters = clusteringAlgorithm.getClusters();
+        System.out.println("ALL CLOST: " + all_clusters.size());
+        for(Graph g : all_clusters) {
+            System.out.println("ALLL MIN NODES: " + g.getVertexCount());
+        }
         System.out.println("TOOL CLUSTER SIZE: " + clusteringAlgorithm.getClusters().size());
         //clusteringAlgorithm.colorClusters(clusteringAlgorithm.getClusters());
         //System.out.println("Clusters size: " + clusteringAlgorithm.getClusters().size());
@@ -56,7 +60,8 @@ public class Main {
 
         System.out.println("PACKAGE CLUSTER SIZE: " + package_clusters.size());
 
-        graphVisualization.visualizeGraph(initialSystemStructure.getPackageClustersGraph(), "PACKAGES", true);
+        //graphVisualization.visualizeGraph(initialSystemStructure.getPackageClustersGraph(), "PACKAGES", true);
+        graphVisualization.visualizeGraphMQ(initialSystemStructure.getPackageClustersGraph(), "PACKAGES", clusteringAlgorithm.computeMQ(graph, package_clusters));
 
         initialSystemStructure.getPackageClustersMQ();
 

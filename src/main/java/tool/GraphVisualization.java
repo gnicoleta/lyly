@@ -33,6 +33,7 @@ public class GraphVisualization {
     JComboBox treshodComboBox = new JComboBox(tresHoldBoxValues);
     ClusteringAlgorithm clusteringAlgorithm = new ClusteringAlgorithm();
     int contor = 0;
+    int min_nodes_default = 3;
 
     //public void visualizeGraph(Graph graph) {
 
@@ -233,9 +234,8 @@ public class GraphVisualization {
 
         minNodesInCluster.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
                 minNodesInCluster.setText("No. of nodes: " + minNodesInCluster.getText().replaceAll("\\D+", ""));
-                System.out.println(minNodesInCluster.getText());
+                System.out.println("AKA" + minNodesInCluster.getText());
             }
         });
         tresshold.setToolTipText("By default is the average of graph weights");
@@ -276,13 +276,14 @@ public class GraphVisualization {
         double init_treshold = clusteringAlgorithm.computeTheTressHold(graph);
         tresshold_val = init_treshold;
         setTressholdInputField(tresshold_val);
-        setMinNodesInCluster(2);
+        setMinNodesInCluster(min_nodes_default);
 
 
         JButton clusterFrameBtn = new JButton("Clusters");
         clusterFrameBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                clusterFrame(tresshold_val, 2, "CLUSTERS", graph);
+                System.out.println("AKA" + min_nodes_default);
+                clusterFrame(tresshold_val, min_nodes_default, "CLUSTERS", graph);
             }
         });
 
@@ -327,6 +328,14 @@ public class GraphVisualization {
             }
         });
 
+        minNodesInCluster.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                minNodesInCluster.setText("No. of nodes: " + minNodesInCluster.getText().replaceAll("\\D+", ""));
+                min_nodes_default = Integer.parseInt(minNodesInCluster.getText().replaceAll("\\D+", ""));
+                System.out.println("AKA" + minNodesInCluster.getText());
+            }
+        });
+
         controls.add(treshodComboBox);
         controls.add(minNodesInCluster);
         controls.add(clusterFrameBtn);
@@ -362,8 +371,16 @@ public class GraphVisualization {
         tresshold.setText("Tresshold: " + value);
     }
 
-    public void setMinNodesInCluster(double value) {
+    public void setMinNodesInCluster(int value) {
 
         minNodesInCluster.setText("No. of nodes: " + value);
+    }
+
+    public void visualizeGraphMQ(Graph graph, String window_name, Double MQ) {
+        JFrame newFrame = visualizeGraph(graph, window_name, false);
+        JLabel label = new JLabel("MQ: " + MQ);
+        newFrame.add(label, BorderLayout.NORTH);
+        newFrame.setVisible(true);
+        System.out.println("TOOL CLUSTER SIZE: " + clusteringAlgorithm.getClusters().size());
     }
 }

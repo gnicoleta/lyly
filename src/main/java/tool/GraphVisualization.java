@@ -96,7 +96,8 @@ public class GraphVisualization {
 
         //JFrame frame = new JFrame("Complex Graph View");
         contor++;
-        JFrame frame = new JFrame(window_title + contor);
+        //JFrame frame = new JFrame(window_title + contor);
+        JFrame frame = new JFrame(window_title);
         Container content = frame.getContentPane();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(vv);
@@ -363,7 +364,9 @@ public class GraphVisualization {
         Graph clusters = clusteringAlgorithm.generateClusters(tresshold_value, kids);
         JFrame newFrame = visualizeComplexGraphSteps(clusters, "CLUSTERS");
         JLabel label = new JLabel("MQ: " + clusteringAlgorithm.computeMQ(g, clusteringAlgorithm.getClusters()));
+        JLabel label_tres = new JLabel("Cluster bigger than: " + this.min_nodes_default + " nodes, after " + "threshold: " +  this.tresshold_val );
         newFrame.add(label, BorderLayout.NORTH);
+        newFrame.add(label_tres, BorderLayout.SOUTH);
         System.out.println("TOOL CLUSTER SIZE: " + clusteringAlgorithm.getClusters().size());
     }
 

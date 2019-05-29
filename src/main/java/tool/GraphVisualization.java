@@ -43,8 +43,8 @@ public class GraphVisualization {
     public JFrame visualizeGraph(Graph graph, String window_title, boolean visible) {
         System.out.println("2- " + graph.getVertices());
         // The Layout<V, E> is parameterized by the vertex and edge types
-        Layout<Node, Edge> layout = new FRLayout2<>(graph);
-        layout.setSize(new Dimension(5000, 5000)); // sets the initial size of the space
+        Layout<Node, Edge> layout = new FRLayout<>(graph);
+        layout.setSize(new Dimension(2000, 2000)); // sets the initial size of the space
 
         // The BasicVisualizationServer<V,E> is parameterized by the edge types
         //layout should display all the clusters inside the frame

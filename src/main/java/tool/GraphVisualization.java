@@ -1,7 +1,9 @@
 package tool;
 
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
+import edu.uci.ics.jung.algorithms.layout.FRLayout2;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.layout.SpringLayout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.Context;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
@@ -41,12 +43,14 @@ public class GraphVisualization {
     public JFrame visualizeGraph(Graph graph, String window_title, boolean visible) {
         System.out.println("2- " + graph.getVertices());
         // The Layout<V, E> is parameterized by the vertex and edge types
-        Layout<Node, Edge> layout = new FRLayout<>(graph);
-        layout.setSize(new Dimension(1000, 1000)); // sets the initial size of the space
+        Layout<Node, Edge> layout = new FRLayout2<>(graph);
+        layout.setSize(new Dimension(5000, 5000)); // sets the initial size of the space
 
         // The BasicVisualizationServer<V,E> is parameterized by the edge types
+        //layout should display all the clusters inside the frame
+        //mapping the layout to the visualization viewer
         VisualizationViewer<Node, Edge> vv =
-                new VisualizationViewer<Node, Edge>(layout, new Dimension(800, 800));
+                new VisualizationViewer<Node, Edge>(layout, new Dimension(2000, 2000));
 
         Transformer<Node, Paint> vertexColor = new Transformer<Node, Paint>() {
             public Paint transform(Node i) {

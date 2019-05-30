@@ -6,9 +6,9 @@ import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.SpringLayout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.Context;
+import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.control.AbstractModalGraphMouse;
-import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
+import edu.uci.ics.jung.visualization.control.*;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
 import oracle.jrockit.jfr.JFR;
 import org.apache.commons.collections15.Transformer;
@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -44,13 +45,13 @@ public class GraphVisualization {
         System.out.println("2- " + graph.getVertices());
         // The Layout<V, E> is parameterized by the vertex and edge types
         Layout<Node, Edge> layout = new FRLayout<>(graph);
-        layout.setSize(new Dimension(2000, 2000)); // sets the initial size of the space
+        //layout.setSize(new Dimension(800, 800)); // sets the initial size of the space
 
         // The BasicVisualizationServer<V,E> is parameterized by the edge types
         //layout should display all the clusters inside the frame
         //mapping the layout to the visualization viewer
         VisualizationViewer<Node, Edge> vv =
-                new VisualizationViewer<Node, Edge>(layout, new Dimension(2000, 2000));
+                new VisualizationViewer<Node, Edge>(layout, new Dimension(1800, 800));
 
         Transformer<Node, Paint> vertexColor = new Transformer<Node, Paint>() {
             public Paint transform(Node i) {
@@ -92,7 +93,7 @@ public class GraphVisualization {
         //vv.getRenderContext().setEdgeLabelClosenessTransformer(edgeTransformer);
         vv.getRenderContext().setLabelOffset(15);
         //vv.getRenderContext().setVertexShapeTransformer(vertexSize);
-        vv.setPreferredSize(new Dimension(800, 800)); //Sets the viewing area size
+        //vv.setPreferredSize(new Dimension(1800, 1800)); //Sets the viewing area size
         vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
         //vv.getRenderContext().setEdgeLabelTransformer(new ToStringLabeller());
         vv.getRenderContext().setVertexLabelTransformer(vertexLabelTransformer);
@@ -100,9 +101,20 @@ public class GraphVisualization {
 
         //JFrame frame = new JFrame("Complex Graph View");
         contor++;
+
+
         //JFrame frame = new JFrame(window_title + contor);
         JFrame frame = new JFrame(window_title);
         Container content = frame.getContentPane();
+
+        GraphZoomScrollPane panel = new GraphZoomScrollPane(vv);
+        panel.setVisible(true);
+
+
+        //final GraphZoomScrollPane panel = new GraphZoomScrollPane(vv);
+        frame.getContentPane().add(panel);
+
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(vv);
         frame.pack();
@@ -388,6 +400,7 @@ public class GraphVisualization {
         JLabel label = new JLabel("MQ: " + MQ);
         newFrame.add(label, BorderLayout.NORTH);
         newFrame.setVisible(true);
+        newFrame.setLocationRelativeTo(null);
         System.out.println("TOOL CLUSTER SIZE: " + clusteringAlgorithm.getClusters().size());
     }
 }

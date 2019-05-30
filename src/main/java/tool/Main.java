@@ -33,12 +33,12 @@ public class Main {
         Set<Graph> package_clusters =
                 initialSystemStructure.
                         getInitialStructureOfTheSystem(initialPackageStructure.
-                                getPackageStructureOfTheSystem("src\\main\\resources\\jars\\" + name_of_file +".jar"), graph, 1);
+                                getPackageStructureOfTheSystem("src\\main\\resources\\jars\\" + name_of_file +".jar"), graph, 0);
 
 
         //remake some edges
-        //package_clusters = initialSystemStructure.makePackageEdges(package_clusters);
-        //initialSystemStructure.setPackages_graph_clusters(package_clusters);
+        package_clusters = initialSystemStructure.makePackageEdges(package_clusters);
+        initialSystemStructure.setPackages_graph_clusters(package_clusters);
 //        for(Graph g: package_clusters) {
 //            System.out.println(g);
 //        }

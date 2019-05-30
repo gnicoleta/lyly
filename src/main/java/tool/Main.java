@@ -14,7 +14,23 @@ public class Main {
         CSVGraphHandler complexCSVGraph = new CSVGraphHandler();
         CSVGraphHandler complexCSVGraph2 = new CSVGraphHandler();
         //Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\bank.jar_edges.csv");
-        String name_of_file = "rice-api";
+        /*
+        azureblob-1.5.0-rc.1
+        bobo-browse-3.0.0
+        bursa
+        car-rental-system-core-3.2-client
+        manta-1.9 //?
+        rice-api
+        yahoo_search-2.0.1
+        yui-1.4.7
+        zypr-api
+        facebook
+        nadron
+        yank
+        zel
+
+         */
+        String name_of_file = "yank";
         Graph graph = complexCSVGraph.buildGraphFromCsvFile("src\\main\\resources\\csv_files\\" + name_of_file + ".jar_edges.csv");
         ClusteringAlgorithm clusteringAlgorithm = new ClusteringAlgorithm(graph);
         //ClusteringAlgorithmInitalGraph clusteringAlgorithmInitalGraph = new ClusteringAlgorithmInitalGraph(graph);
@@ -24,21 +40,23 @@ public class Main {
 
         GraphVisualization graphVisualization = new GraphVisualization();
         graphVisualization.visualizeComplexGraphSteps(graph, "Complex Graph View");
+
+        ModularizationQuality mq = new ModularizationQuality();
         //System.out.println(graph.getVertices());
 
 
 
-        InitialSystemStructure initialSystemStructure = new InitialSystemStructure(graph);
+       /* InitialSystemStructure initialSystemStructure = new InitialSystemStructure(graph);
         InitialPackageStructure initialPackageStructure = new InitialPackageStructure();
         Set<Graph> package_clusters =
                 initialSystemStructure.
                         getInitialStructureOfTheSystem(initialPackageStructure.
-                                getPackageStructureOfTheSystem("src\\main\\resources\\jars\\" + name_of_file +".jar"), graph, 0);
+                                getPackageStructureOfTheSystem("src\\main\\resources\\jars\\" + name_of_file +".jar"), graph, 0);*/
 
 
         //remake some edges
-        package_clusters = initialSystemStructure.makePackageEdges(package_clusters);
-        initialSystemStructure.setPackages_graph_clusters(package_clusters);
+        //Set<Graph> remade_pack_clst = initialSystemStructure.makePackageEdges(package_clusters);
+        //initialSystemStructure.setPackages_graph_clusters(remade_pack_clst);
 //        for(Graph g: package_clusters) {
 //            System.out.println(g);
 //        }
@@ -62,15 +80,17 @@ public class Main {
         //clusteringAlgorithm.colorClusters(clusteringAlgorithm.getClusters());
         //System.out.println("Clusters size: " + clusteringAlgorithm.getClusters().size());
 
-        System.out.println("MQ of TOOL: " + clusteringAlgorithm.computeMQ(graph, all_clusters)); //result?
-        System.out.println("MQ of PACKAGES: " + clusteringAlgorithm.computeMQ(graph, package_clusters));
+        System.out.println("MQ of TOOL: " + mq.computeMQ(graph, all_clusters)); //result?
+        //System.out.println("MQ of PACKAGES: " + mq.computeMQ(graph, package_clusters));
 
-        System.out.println("PACKAGE CLUSTER SIZE: " + package_clusters.size());
+        //System.out.println("PACKAGE CLUSTER SIZE: " + package_clusters.size());
 
         //graphVisualization.visualizeGraph(initialSystemStructure.getPackageClustersGraph(), "PACKAGES", true);
-        graphVisualization.visualizeGraphMQ(initialSystemStructure.getPackageClustersGraph(), "PACKAGES", clusteringAlgorithm.computeMQ(graph, package_clusters));
+        //graphVisualization.visualizeGraphMQ(initialSystemStructure.getPackageClustersGraph(remade_pack_clst), "PACKAGES", mq.computeMQ(graph, package_clusters));
 
-        initialSystemStructure.getPackageClustersMQ();
+        //graphVisualization.visualizeGraphMQ(initialSystemStructure.getPackageClustersGraph(package_clusters), "PACKAGES init", mq.computeMQ(graph, package_clusters));
+
+        //initialSystemStructure.getPackageClustersMQ();
 
         //complexCSVGraph.visualizeGraph(initialSystemStructure.getPackageClustersGraph(), "PACKAGES");
         //result.getVertices().stream().forEach(System.out::println);

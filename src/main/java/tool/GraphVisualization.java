@@ -376,10 +376,11 @@ public class GraphVisualization {
      */
     public void clusterFrame(Double tresshold_value, Integer kids, String str, Graph g) {
         //JFrame newFrame = visualizeGraph(graph, str);
+        ModularizationQuality mq = new ModularizationQuality();
         clusteringAlgorithm.setGraph(g);
         Graph clusters = clusteringAlgorithm.generateClusters(tresshold_value, kids);
         JFrame newFrame = visualizeComplexGraphSteps(clusters, "CLUSTERS");
-        JLabel label = new JLabel("MQ: " + clusteringAlgorithm.computeMQ(g, clusteringAlgorithm.getClusters()));
+        JLabel label = new JLabel("MQ: " + mq.computeMQ(g, clusteringAlgorithm.getClusters()));
         JLabel label_tres = new JLabel("Cluster bigger than: " + this.min_nodes_default + " nodes, after " + "threshold: " +  this.tresshold_val );
         newFrame.add(label, BorderLayout.NORTH);
         newFrame.add(label_tres, BorderLayout.SOUTH);

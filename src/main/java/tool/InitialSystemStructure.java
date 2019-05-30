@@ -189,7 +189,7 @@ public class InitialSystemStructure {
         this.packages_graph_clusters = packages_graph_clusters;
     }
 
-    public Graph getPackageClustersGraph() {
+    public Graph getPackageClustersGraph(Set<Graph>packages_graph_clusters) {
         Graph g = new UndirectedSparseMultigraph();
         for (Graph ge : packages_graph_clusters) {
             Collection<Node> nodes = ge.getVertices();
@@ -209,7 +209,8 @@ public class InitialSystemStructure {
     }
 
     public void getPackageClustersMQ() {
-        Double packageSystemMQ = clusteringAlgorithm.computeMQ(this.graph, this.packages_graph_clusters);
+        ModularizationQuality mq = new ModularizationQuality();
+        Double packageSystemMQ = mq.computeMQ(this.graph, this.packages_graph_clusters);
         System.out.println("PACKAGE SYSTEM MQ: " + packageSystemMQ);
     }
 
@@ -320,7 +321,11 @@ public class InitialSystemStructure {
                 if(t.getVertices().contains(nl)) {
                     for(Edge e : link_edges) {
                         if(e.getEdgeDestiantionNode().equals(nl ) || e.getEdgeSourceNode().equals(nl ) ) {
-                            System.out.println("REFACUT:" + e);
+                            System.out.println("REFACUT:" + e + " py : " + nl + " ---- " + e.getEdgeSourceNode().getCluster_id() + " --- " + e.getEdgeDestiantionNode().getCluster_id());
+                            //e.getEdgeSourceNode().setCluster_id(nl.getCluster_id());
+                            //e.getEdgeDestiantionNode().setCluster_id(nl.getCluster_id());
+                            e.getEdgeDestiantionNode().setCluster_id(nl.getCluster_id());
+                            e.getEdgeDestiantionNode().setColor(nl.getColor());
                             t.addEdge(e, e.getEdgeSourceNode(), e.getEdgeDestiantionNode());
                             link_nodes.remove(nl);
                         }

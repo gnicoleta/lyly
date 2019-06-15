@@ -1,13 +1,7 @@
-package tool;
+package tool.clustering_algorithm;
 
 import com.google.common.collect.Streams;
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import edu.uci.ics.jung.algorithms.cluster.BicomponentClusterer;
-import edu.uci.ics.jung.algorithms.cluster.EdgeBetweennessClusterer;
-import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
-import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 
@@ -15,8 +9,8 @@ import java.awt.*;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.google.common.collect.MoreCollectors;
-import sun.java2d.windows.GDIRenderer;
+import tool.graph_builder.Edge;
+import tool.graph_builder.Node;
 
 public class ClusteringAlgorithm {
 

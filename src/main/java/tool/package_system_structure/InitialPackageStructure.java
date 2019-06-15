@@ -1,4 +1,4 @@
-package tool;
+package tool.package_system_structure;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,7 +20,6 @@ public class InitialPackageStructure {
         Set<String> packages_names = new HashSet<>();
         ZipInputStream zip = null;
         try {
-            zip = new ZipInputStream(new FileInputStream("src\\main\\resources\\jars\\manta-1.9.jar"));
             zip = new ZipInputStream(new FileInputStream(path_to_jar_file));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -50,6 +49,7 @@ public class InitialPackageStructure {
         }
 
         for (String className : classNames) {
+            System.out.println("4. " + className);
             for (String packageName : packages_names) {
                 //className is composed by package name + class name
                 //must find the exact package name in a full class name

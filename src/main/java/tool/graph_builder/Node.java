@@ -1,7 +1,6 @@
-package tool;
+package tool.graph_builder;
 
 import java.awt.*;
-import java.util.Collection;
 
 public class Node {
     String id;

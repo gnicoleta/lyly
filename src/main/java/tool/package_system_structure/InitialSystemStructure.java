@@ -1,12 +1,13 @@
-package tool;
+package tool.package_system_structure;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
-import org.jcp.xml.dsig.internal.dom.DOMUtils;
+import tool.modularization_quality.ModularizationQuality;
+import tool.clustering_algorithm.ClusteringAlgorithm;
+import tool.graph_builder.Edge;
+import tool.graph_builder.Node;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -41,6 +42,7 @@ public class InitialSystemStructure {
         for (Map.Entry<String, HashSet<String>> e : packages_classes_structure.entrySet()) {
             String key = e.getKey();
             HashSet<String> values = e.getValue();
+            System.out.println("gaga " + key + " -- " + values);
             ArrayList<Node> nodes = new ArrayList<>();
             ArrayList<Edge> edges = new ArrayList<>();
             Graph package_cluster_graph = new UndirectedSparseMultigraph();
@@ -66,6 +68,45 @@ public class InitialSystemStructure {
         }
         //clusteringAlgorithm.colorClusters(packages_graph_clusters);
         clusteringAlgorithm.colorNodesInClusters(packages_graph_clusters);
+        return packages_graph_clusters;
+    }
+    public Set<Graph> getInitialStructureOfTheSystem2(HashMap<String, HashSet<String>> packages_classes_structur, Graph tool_graph, Integer level) {
+        HashMap<String, HashSet<String>> packages_classes_structure = packages_classes_structur;
+        if (level != 0) {
+            packages_classes_structure = this.reclusterBasedOnPackageLevel(level, packages_classes_structur);
+        }
+        int contor = 0;
+        for (Map.Entry<String, HashSet<String>> e : packages_classes_structure.entrySet()) {
+            contor ++;
+            String key = e.getKey();
+            HashSet<String> values = e.getValue();
+            System.out.println("dada. " + key + " -- " + values);
+            ArrayList<Node> nodes = new ArrayList<>();
+            ArrayList<Edge> edges = new ArrayList<>();
+            Graph package_cluster_graph = new UndirectedSparseMultigraph();
+
+            for (String s : values) {
+                String node_className = s.substring(0, s.length() - ".class".length());
+                Node foundNode = clusteringAlgorithm.getNode(tool_graph, new Node(node_className));
+                if (foundNode != null) {
+                    nodes.add(foundNode);
+                }
+            }
+            for (Node n : nodes) {
+                edges.addAll(tool_graph.getIncidentEdges(n));
+                package_cluster_graph.addVertex(n);
+            }
+
+            for (Edge edge : edges) {
+                if (nodes.contains(edge.getEdgeSourceNode()) && nodes.contains(edge.getEdgeDestiantionNode())) {
+                    package_cluster_graph.addEdge(edge, edge.getEdgeSourceNode(), edge.getEdgeDestiantionNode(), EdgeType.UNDIRECTED);
+                }
+            }
+            packages_graph_clusters.add(package_cluster_graph);
+        }
+        //clusteringAlgorithm.colorClusters(packages_graph_clusters);
+        clusteringAlgorithm.colorNodesInClusters(packages_graph_clusters);
+        System.out.println("CONTOR: " + contor);
         return packages_graph_clusters;
     }
 

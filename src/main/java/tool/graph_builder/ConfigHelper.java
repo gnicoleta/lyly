@@ -1,4 +1,4 @@
-package tool;
+package tool.graph_builder;
 
 import java.io.*;
 import java.util.ArrayList;

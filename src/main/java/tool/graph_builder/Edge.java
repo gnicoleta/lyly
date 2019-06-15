@@ -1,9 +1,9 @@
-package tool;
+package tool.graph_builder;
 
 public class Edge {
     Node source;
     Node destination;
-    double weight;
+    public double weight;
     String Label;
     int id;
 

@@ -1,4 +1,4 @@
-package tool;
+package tool.clustering_algorithm;
 /*
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;

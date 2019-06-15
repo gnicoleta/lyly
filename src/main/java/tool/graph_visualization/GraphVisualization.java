@@ -1,29 +1,27 @@
-package tool;
+package tool.graph_visualization;
 
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
-import edu.uci.ics.jung.algorithms.layout.FRLayout2;
 import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.algorithms.layout.SpringLayout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.Context;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.*;
 import edu.uci.ics.jung.visualization.decorators.ToStringLabeller;
-import oracle.jrockit.jfr.JFR;
 import org.apache.commons.collections15.Transformer;
+import tool.modularization_quality.ModularizationQuality;
+import tool.clustering_algorithm.ClusteringAlgorithm;
+import tool.graph_builder.Edge;
+import tool.graph_builder.Node;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Set;
 
 public class GraphVisualization {
 
@@ -33,6 +31,7 @@ public class GraphVisualization {
     JTextField tresshold = new JTextField(10);
     JTextField minNodesInCluster = new JTextField(10);
     String[] tresHoldBoxValues = {"default", "25%", "50%", "75%", "125%", "150%", "175%", "200%"};
+    int procent = 100;
     JComboBox treshodComboBox = new JComboBox(tresHoldBoxValues);
     ClusteringAlgorithm clusteringAlgorithm = new ClusteringAlgorithm();
     int contor = 0;
@@ -45,13 +44,13 @@ public class GraphVisualization {
         System.out.println("2- " + graph.getVertices());
         // The Layout<V, E> is parameterized by the vertex and edge types
         Layout<Node, Edge> layout = new FRLayout<>(graph);
-        //layout.setSize(new Dimension(800, 800)); // sets the initial size of the space
+        layout.setSize(new Dimension(1600, 1000)); // sets the initial size of the space
 
         // The BasicVisualizationServer<V,E> is parameterized by the edge types
         //layout should display all the clusters inside the frame
         //mapping the layout to the visualization viewer
         VisualizationViewer<Node, Edge> vv =
-                new VisualizationViewer<Node, Edge>(layout, new Dimension(1800, 800));
+                new VisualizationViewer<Node, Edge>(layout, new Dimension(1000, 1600));
 
         Transformer<Node, Paint> vertexColor = new Transformer<Node, Paint>() {
             public Paint transform(Node i) {
@@ -61,7 +60,9 @@ public class GraphVisualization {
 
         Transformer<Node, String> vertexLabelTransformer = new Transformer<Node, String>() {
             public String transform(Node vertex) {
-                return (String) vertex.Node_Property();
+                String formated_Label = vertex.Node_Property().substring(vertex.Node_Property().lastIndexOf(".") + 1);
+                //return (String) vertex.Node_Property();
+                return (String) formated_Label;
             }
         };
 
@@ -69,7 +70,7 @@ public class GraphVisualization {
             public Shape transform(Node i) {
                 Ellipse2D circle = new Ellipse2D.Double(-15, -15, 30, 30);
                 // in this case, the vertex is twice as large
-                AffineTransform.getScaleInstance(2, 2).createTransformedShape(circle);
+                //AffineTransform.getScaleInstance(14, 14).createTransformedShape(circle);
                 return circle;
             }
         };
@@ -90,6 +91,8 @@ public class GraphVisualization {
 
         vv.getRenderContext().setEdgeLabelTransformer(edgeLabelTransformer);
         vv.getRenderContext().setVertexFillPaintTransformer(vertexColor);
+        //vv.getRenderContext().setVertexDrawPaintTransformer(vertexSize);
+        vv.getRenderContext().setVertexShapeTransformer(vertexSize);
         //vv.getRenderContext().setEdgeLabelClosenessTransformer(edgeTransformer);
         vv.getRenderContext().setLabelOffset(15);
         //vv.getRenderContext().setVertexShapeTransformer(vertexSize);
@@ -236,12 +239,13 @@ public class GraphVisualization {
      * third step is the clustered form, after applying the clustering algorithm on the system, we obtain the clusters
      * also the MQ is computed based on the clusters
      */
-    public JFrame visualizeComplexGraphSteps(Graph graph, String window_title) {
+    public JFrame visualizeComplexGraphSteps(Graph graph, String window_title, double trs) {
         //this.graph = graph;
         System.out.println(graph.getVertices());
         JFrame frame = visualizeGraph(graph, window_title, false);
         frame.setVisible(true);
         Container content = frame.getContentPane();
+        this.tresshold_val = trs;
         tresshold.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 tresshold.setText("Tresshold: " + tresshold.getText().replaceAll("\\D+", ""));
@@ -264,7 +268,7 @@ public class GraphVisualization {
 
         clusteringAlgorithm.setGraph(graph);
 
-        JButton generateMST = new JButton("generate MST");
+        JButton generateMST = new JButton("config clusters parameters");
         generateMST.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 MSTFrame(clusteringAlgorithm.generateMST(graph, null, true), "MST");
@@ -287,10 +291,11 @@ public class GraphVisualization {
      * The minimum number of nodes in a cluster can be given by the user
      */
     public void MSTFrame(Graph graph, String str) {
-        JFrame newFrame = visualizeComplexGraphSteps(graph, str);
+        JFrame newFrame = visualizeComplexGraphSteps(graph, str, this.tresshold_val);
 
         JPanel controls = new JPanel();
-        double init_treshold = clusteringAlgorithm.computeTheTressHold(graph);
+        //double init_treshold = clusteringAlgorithm.computeTheTressHold(graph);
+        double init_treshold = this.tresshold_val;
         tresshold_val = init_treshold;
         setTressholdInputField(tresshold_val);
         setMinNodesInCluster(min_nodes_default);
@@ -313,22 +318,27 @@ public class GraphVisualization {
                 if (selectedIndex == 0) {
                     tresshold_val = 1 * init_treshold;
                     treshold_label.setText("Treshold: " + tresshold_val);
+                    procent = 1;
                 }
                 if (selectedIndex == 1) {
                     tresshold_val = 0.25 * init_treshold;
                     treshold_label.setText("Treshold: " + tresshold_val);
+                    procent=25;
                 }
                 if (selectedIndex == 2) {
                     tresshold_val = 0.50 * init_treshold;
                     treshold_label.setText("Treshold: " + tresshold_val);
+                    procent=50;
                 }
                 if (selectedIndex == 3) {
                     tresshold_val = 0.75 * init_treshold;
                     treshold_label.setText("Treshold: " + tresshold_val);
+                    procent=75;
                 }
                 if (selectedIndex == 4) {
                     tresshold_val = 1.25 * init_treshold;
                     treshold_label.setText("Treshold: " + tresshold_val);
+                    procent=125;
                 }
                 if (selectedIndex == 5) {
                     tresshold_val = 1.50 * init_treshold;
@@ -378,10 +388,26 @@ public class GraphVisualization {
         //JFrame newFrame = visualizeGraph(graph, str);
         ModularizationQuality mq = new ModularizationQuality();
         clusteringAlgorithm.setGraph(g);
-        Graph clusters = clusteringAlgorithm.generateClusters(tresshold_value, kids);
-        JFrame newFrame = visualizeComplexGraphSteps(clusters, "CLUSTERS");
+        ClusteringAlgorithm cs = new ClusteringAlgorithm(g);
+        Graph clusters = clusteringAlgorithm.generateClusters(this.tresshold_val, kids);
+        //double trs_val = cs.computeTheTressHold(g);
+        double trs_val = this.tresshold_val;
+//        if(procent==1) {
+//            trs_val = 1*trs_val;
+//        }if(procent==25) {
+//            trs_val = 0.25*trs_val;
+//        }if(procent==50) {
+//            trs_val = 0.5*trs_val;
+//        }if(procent==75) {
+//            trs_val = 0.75*trs_val;
+//        }if(procent==125) {
+//            trs_val = 1.25*trs_val;
+//        }
+        //Graph clusters = cs.generateClusters(trs_val, kids);
+        JFrame newFrame = visualizeComplexGraphSteps(clusters, "CLUSTERS", this.tresshold_val);
         JLabel label = new JLabel("MQ: " + mq.computeMQ(g, clusteringAlgorithm.getClusters()));
-        JLabel label_tres = new JLabel("Cluster bigger than: " + this.min_nodes_default + " nodes, after " + "threshold: " +  this.tresshold_val );
+        //JLabel label = new JLabel("MQ: " + mq.computeMQ(g, cs.getClusters()));
+        JLabel label_tres = new JLabel("Number of clusters: " + clusteringAlgorithm.getClusters().size() + " and cluster bigger than: " + this.min_nodes_default + " nodes, after " + "threshold procent:" + procent + ": " +  this.tresshold_val + " de fapt: " + trs_val );
         newFrame.add(label, BorderLayout.NORTH);
         newFrame.add(label_tres, BorderLayout.SOUTH);
         System.out.println("TOOL CLUSTER SIZE: " + clusteringAlgorithm.getClusters().size());
@@ -396,9 +422,11 @@ public class GraphVisualization {
         minNodesInCluster.setText("No. of nodes: " + value);
     }
 
-    public void visualizeGraphMQ(Graph graph, String window_name, Double MQ) {
+    public void visualizeGraphMQ(Graph graph, Set<Graph> clusters, String window_name, Double MQ) {
         JFrame newFrame = visualizeGraph(graph, window_name, false);
-        JLabel label = new JLabel("MQ: " + MQ);
+        ModularizationQuality mmq = new ModularizationQuality();
+        //JLabel label = new JLabel("MQ: " + MQ);
+        JLabel label = new JLabel("Number of clusters: " + clusters.size()+" and MQ: " + mmq.computeMQ(graph, clusters));
         newFrame.add(label, BorderLayout.NORTH);
         newFrame.setVisible(true);
         newFrame.setLocationRelativeTo(null);

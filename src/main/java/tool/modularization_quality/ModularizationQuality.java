@@ -1,6 +1,8 @@
-package tool;
+package tool.modularization_quality;
 
 import edu.uci.ics.jung.graph.Graph;
+import tool.graph_builder.Edge;
+import tool.graph_builder.Node;
 
 import java.util.*;
 
@@ -57,7 +59,7 @@ public class ModularizationQuality {
 
         while (keySetIterator.hasNext()) {
             Graph key = keySetIterator.next();
-            System.out.println("key: " + key.hashCode() + " value: " + clusters_mq.get(key));
+            //System.out.println("key: " + key.hashCode() + " value: " + clusters_mq.get(key));
             double cluster_CF = clusters_mq.get(key);
             if(Double.isNaN(cluster_CF)) cluster_CF = 0.0;
             //system_mq += clusters_mq.get(key);

@@ -1,4 +1,4 @@
-package tool;
+package tool.clustering_algorithm;
 /*
 import edu.uci.ics.jung.graph.Graph;
 
